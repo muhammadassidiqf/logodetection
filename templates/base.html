@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>{% block title %}{% endblock %}</title>
+  {% block styles %}
+  {% endblock %}
+  <!-- endinject -->
+  <link rel="shortcut icon" href="{{ url_for('static',filename='images/akun.png')}}" />
+</head>
+<body>
+  <div class="container-scroller">
+    <!-- partial:partials/_navbar.html -->
+    {% block navbar %}
+    {% endblock %}
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
+    {% block sidebar %}
+    {% endblock %}
+    {% block content %}
+    {% endblock %}
+     <!-- partial:partials/_footer.html -->
+     <footer class="footer">
+        <div class="d-sm-flex justify-content-center justify-content-sm-between">
+          <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Team <a href=""
+              target="_blank">Logo Detection</a></span>
+          <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Copyright © 2022. All rights
+            reserved.</span>
+        </div>
+      </footer>
+      <!-- partial -->
+    </div>
+    <!-- main-panel ends -->
+  </div>
+    <!-- page-body-wrapper ends -->
+  </div>
+  <!-- container-scroller -->
+  {% block scripts %}
+  {% endblock %}
+  <!-- endinject -->
+  <!-- End custom js for this page-->
+</body>
+{% block scripting %}
+{% endblock %}
+
+</html>
