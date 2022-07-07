@@ -240,18 +240,19 @@ def detection():
                 # # generate = gen('static/uploads/'+filename,filename)
                 # if(generate == True):
                 #     return jsonify({'filename':str(filename)})
-                model_id = request.form.get('model_id', type=str)
+                model_id = request.form.getlist('model_id')
                 ads_value = request.form.get('ads_value', type=str)
                 ads = ads_value.replace(",","")
                 filename_awal = str(filename)
-                filename_akhir = str(filename.rsplit('.', 1)[0]) + '_' + str(time.time())+ '.mp4'
-                LogoDB.add_video(self=LogoDB, arr_video=[filename_awal,filename_akhir,model_id, ads, session['user_id']])
-                video = LogoDB.get_one_video(self=LogoDB, video_id=filename_akhir)
-                video_id = filename_akhir
-                model = video['model_id']
-                # print(video_id)
-                yolo = YoloDetector()
-                yolomain = yolo.main(id_model=model, video_id=video_id, thresh=0.5, ads=ads)
+                for i in model_id:
+                    filename_akhir = str(filename.rsplit('.', 1)[0]) + '_' + str(time.time())+ '.mp4'
+                    LogoDB.add_video(self=LogoDB, arr_video=[filename_awal,filename_akhir,i, ads, session['user_id']])
+                    video = LogoDB.get_one_video(self=LogoDB, video_id=filename_akhir)
+                    video_id = filename_akhir
+                    model = video['model_id']
+                    # print(len(model_id))
+                    yolo = YoloDetector()
+                    yolomain = yolo.main(id_model=model, video_id=video_id, thresh=0.5, ads=ads)
                 if(yolomain):
                     timing = time.time() - start
                     datanya = LogoDB.get_output(self=LogoDB, video_id=video_id)
@@ -275,16 +276,42 @@ def add_model():
         isExist = os.path.exists(file_path)
         if not isExist:
             os.mkdir(file_path)
-        path1 = os.path.join(file_path, f.filename)
-        path2 = os.path.join(file_path, f2.filename)
-        path3 = os.path.join(file_path, f3.filename)
-        f.save(path1)
-        f2.save(path2)
-        f3.save(path3)
-        LogoDB.add_model(self=LogoDB, arr_model=[model_name,f.filename,f2.filename,f3.filename])
-        # print(data)
-        return jsonify({'status':True,'message':'Data berhasil ditambahkan!'})
+            path1 = os.path.join(file_path, f.filename)
+            path2 = os.path.join(file_path, f2.filename)
+            path3 = os.path.join(file_path, f3.filename)
+            f.save(path1)
+            f2.save(path2)
+            f3.save(path3)
+            LogoDB.add_model(self=LogoDB, arr_model=[model_name,f.filename,f2.filename,f3.filename])
+            # print(data)
+            return jsonify({'status':True,'message':'Data berhasil ditambahkan!'})
+        else:
+            return jsonify({'error':True,'message':'Data sudah tersedia!'})
+
+        
         # os.mkdir(file_path)
+    else:
+        flash('No selected file')
+        return redirect(url_for('index'))
+
+@app.route('/hapus_model', methods=['POST'])
+def delete_model():
+    if request.method == 'POST':
+        id_model= request.form.get('id', type=str)
+        data = LogoDB.get_one_model(self=LogoDB, model_id=id_model)
+        if (data):
+            isExist = os.path.exists(file_path)
+            basepath = os.path.dirname(__file__)
+            file_path = os.path.join(basepath, 'static/models/', data['model_nama'])
+            if isExist:
+                os.remove(file_path)
+                # print(data)
+                LogoDB.delete_model(self=LogoDB, id_model=id_model)
+                return jsonify({'status':True,'message':'Data berhasil dihapus!'})
+            else:
+                return jsonify({'error':True,'message':'Data gagal terhapus!'})
+        else:
+            return jsonify({'error':True,'message':'Data gagal terhapus!'})
     else:
         flash('No selected file')
         return redirect(url_for('index'))

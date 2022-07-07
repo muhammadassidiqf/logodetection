@@ -152,6 +152,17 @@ class LogoDB():
             return 'berhasil'
         except Exception as e:
             return e
+    def delete_model(self, id_model):
+        try: 
+            self.open_db(self)
+            sql = "Delete from model where model_id = %s"
+            val = id_model
+            cursor.execute(sql, val)
+            conn.commit()
+            self.close_db(self)
+            return 'berhasil'
+        except Exception as e:
+            return e
     def get_output(self, video_id):
         data_show = []
         try: 

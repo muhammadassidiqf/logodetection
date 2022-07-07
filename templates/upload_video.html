@@ -79,12 +79,12 @@ Logo Detection
         <span class="menu-title">Home</span>
       </a>
     </li>
-    <li class="nav-item">
+    <!-- <li class="nav-item">
       <a class="nav-link" href="{{ url_for('generate') }}">
         <i class="mdi mdi-settings mdi-grid-large menu-icon"></i>
         <span class="menu-title">Generate Logo</span>
       </a>
-    </li>
+    </li> -->
     <li class="nav-item">
       <a class="nav-link" href="{{ url_for('create_video') }}">
         <i class="mdi mdi-laptop-chromebook mdi-grid-large menu-icon"></i>
@@ -128,14 +128,18 @@ Logo Detection
                 <div class="col-6">
                   <div class="row">
                     <label for="gambar" class="col-sm-12 col-form-label">Model</label>
-                    <div class="col-sm-12">
-                      <select name="model_id" id="" class="form-control select2" required>
-                        <option value="" selected disabled>-- Choose a Logo Model --</option>
-                        {% for x in data %}
-                        <option value="{{ x['model_id']}}">{{ x['model_nama']}}</option>
-                        {% endfor %}
-                      </select>
+                    {% for x in data %}
+                    <div class="col-sm-2">
+                      <div class="form-group">
+                        <div class="form-check">
+                          <label class="form-check-label">
+                            <input type="checkbox" class="form-check-input" name="model_id" id="model_id" value="{{ x['model_id']}}">
+                            {{ x['model_nama']}}
+                          </label>
+                        </div>
+                      </div>
                     </div>
+                    {% endfor %}
                   </div>
                 </div>
               </div>
