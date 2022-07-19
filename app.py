@@ -11,19 +11,17 @@ import time
 import os
 import random
 from logo_db.main import LogoDB
-import tensorflow as tf
-from tensorflow import keras
-from tensorflow.keras.models import load_model, Model
-from tensorflow.keras.preprocessing import image
+# import tensorflow as tf
+# from tensorflow import keras
+# from tensorflow.keras.models import load_model, Model
+# from tensorflow.keras.preprocessing import image
 import cv2
 import numpy as np
-import psycopg2
-import psycopg2.extras
 import io
 import xlwt
 
 
-from Video import Video
+# from Video import Video
 from logo_db.YoloDetector import YoloDetector
 
 app = Flask(__name__)
@@ -59,46 +57,46 @@ def run(obj, *args, **kwargs):
         if ismethod(attribute):
             attribute(*args, **kwargs)
 
-def prepare_image(file):
-    img = image.load_img(file, target_size=(224, 224))
-    img_array = image.img_to_array(img)
-    img_norm = image.img_to_array(img).astype(np.float32)/255
-    img_array_expanded_dims = np.expand_dims(img_norm, axis=0)
-    return img_array_expanded_dims
+# def prepare_image(file):
+#     img = image.load_img(file, target_size=(224, 224))
+#     img_array = image.img_to_array(img)
+#     img_norm = image.img_to_array(img).astype(np.float32)/255
+#     img_array_expanded_dims = np.expand_dims(img_norm, axis=0)
+#     return img_array_expanded_dims
 
-def prediction(filepath):
-    model = load_model('static/models/bca1.hdf5')
-    model.compile(loss='categorical_crossentropy',
-                optimizer='adam',
-                metrics=['accuracy'])
+# def prediction(filepath):
+#     model = load_model('static/models/bca1.hdf5')
+#     model.compile(loss='categorical_crossentropy',
+#                 optimizer='adam',
+#                 metrics=['accuracy'])
 
-    #matriks citra asli
-    inp = image.load_img(filepath)
-    img_array = image.img_to_array(inp)
+#     #matriks citra asli
+#     inp = image.load_img(filepath)
+#     img_array = image.img_to_array(inp)
 
-    start = time.time()
+#     start = time.time()
 
-    #matriks pre-processing
-    img = prepare_image(filepath)
+#     #matriks pre-processing
+#     img = prepare_image(filepath)
 
-    #proses prediksi
-    classes = model.predict(img)
+#     #proses prediksi
+#     classes = model.predict(img)
 
-    timing = time.time() - start
+#     timing = time.time() - start
 
-    print("processing time: ", timing)
+#     print("processing time: ", timing)
 
 
-    res = []   
-    if classes[0][0] == 1:
-        result = classes[0][0] * 100
-        res.append((result,img_array,img))
-        # print("Daun Padi Sehat")
-    elif classes[0][1] > classes[0][0]:
-        result = classes[0][1] * 100
-        res.append((result,img_array,img))
-        # print("Penyakit Blas Daun Padi")
-    return res
+#     res = []   
+#     if classes[0][0] == 1:
+#         result = classes[0][0] * 100
+#         res.append((result,img_array,img))
+#         # print("Daun Padi Sehat")
+#     elif classes[0][1] > classes[0][0]:
+#         result = classes[0][1] * 100
+#         res.append((result,img_array,img))
+#         # print("Penyakit Blas Daun Padi")
+#     return res
 
 @app.route("/index", methods=["POST", "GET"])
 def index():
@@ -316,36 +314,36 @@ def delete_model():
         flash('No selected file')
         return redirect(url_for('index'))
 
-@app.route('/detect_gambar', methods=['POST', 'GET'])
-def detection_gambar():
-    start = time.time()
-    if request.method == 'POST':
-        if 'file' in request.files:
-            f = request.files['file']
-            if f.filename == '':
-                flash('No selected file')
-                return redirect(request.url)
-            if f and allowed_file(f.filename):
-                model = get_conv_model()
-                file = f.read()
-                np_img = np.fromstring(file, np.uint8)
-                img = cv2.imdecode(np_img, cv2.IMREAD_COLOR)
-                img = cv2.resize(img, (224,224), interpolation = cv2.INTER_CUBIC)
-                temp_f = f.filename[::-1]
-                temp_f = f"{temp_f[temp_f.find('.')+1:][::-1]}"
-                new_path = f"static/temp/{temp_f}.jpg"
-                cv2.imwrite(new_path, img)
-                dim = (224, 224)
-                prob, cat, new_img, lime_img = get_img_prediction_bounding_box(new_path, dim, model)
-                cv2.imwrite(new_path, new_img)
-                cv2.imwrite(f"static/temp/{temp_f}Lime.jpg", lime_img)
-                # return jsonify({'res':f'{temp_f}.jpg'}) 
-                timing = time.time() - start
-                return jsonify({'res':f'static/temp/{temp_f}.jpg', 'timing':timing})
+# @app.route('/detect_gambar', methods=['POST', 'GET'])
+# def detection_gambar():
+#     start = time.time()
+#     if request.method == 'POST':
+#         if 'file' in request.files:
+#             f = request.files['file']
+#             if f.filename == '':
+#                 flash('No selected file')
+#                 return redirect(request.url)
+#             if f and allowed_file(f.filename):
+#                 model = get_conv_model()
+#                 file = f.read()
+#                 np_img = np.fromstring(file, np.uint8)
+#                 img = cv2.imdecode(np_img, cv2.IMREAD_COLOR)
+#                 img = cv2.resize(img, (224,224), interpolation = cv2.INTER_CUBIC)
+#                 temp_f = f.filename[::-1]
+#                 temp_f = f"{temp_f[temp_f.find('.')+1:][::-1]}"
+#                 new_path = f"static/temp/{temp_f}.jpg"
+#                 cv2.imwrite(new_path, img)
+#                 dim = (224, 224)
+#                 prob, cat, new_img, lime_img = get_img_prediction_bounding_box(new_path, dim, model)
+#                 cv2.imwrite(new_path, new_img)
+#                 cv2.imwrite(f"static/temp/{temp_f}Lime.jpg", lime_img)
+#                 # return jsonify({'res':f'{temp_f}.jpg'}) 
+#                 timing = time.time() - start
+#                 return jsonify({'res':f'static/temp/{temp_f}.jpg', 'timing':timing})
                 
-        else:
-            flash('No selected file')
-            return redirect(request.url)
+#         else:
+#             flash('No selected file')
+#             return redirect(request.url)
 @app.route('/video_upload/<filepath>')
 def video_upload(filepath):
     video = Response(gen('static/uploads/'+filepath,filepath), mimetype='multipart/x-mixed-replace; boundary=frame')
@@ -407,4 +405,4 @@ def detail_video(video_id):
         return redirect(url_for('login'))
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0")
