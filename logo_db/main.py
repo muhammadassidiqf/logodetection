@@ -82,6 +82,20 @@ class LogoDB():
         except Exception as e:
             return e
 
+    def get_all_user(self):
+        data_show = []
+        try: 
+            self.open_db(self)
+            sql = "SELECT ROW_NUMBER() OVER() AS num,users.* FROM users"
+            cursor.execute(sql)
+            results = cursor.fetchall()
+            for data in results:
+                data_show.append(data)
+            self.close_db(self)
+            return data_show
+        except Exception as e:
+            return e
+
     def get_all_video(self):
         data_show = []
         try: 
@@ -101,6 +115,17 @@ class LogoDB():
             self.open_db(self)
             sql = "SELECT * FROM model WHERE model_id = %s"
             val = (model_id)
+            cursor.execute(sql, val)
+            results = cursor.fetchone()
+            self.close_db(self)
+            return results
+        except Exception as e:
+            return e
+    def get_one_user(self, user_id):
+        try: 
+            self.open_db(self)
+            sql = "SELECT * FROM users WHERE user_id = %s"
+            val = (user_id)
             cursor.execute(sql, val)
             results = cursor.fetchone()
             self.close_db(self)
@@ -152,11 +177,44 @@ class LogoDB():
             return 'berhasil'
         except Exception as e:
             return e
+    def add_user(self, arr_user):
+        try: 
+            self.open_db(self)
+            sql = "INSERT INTO users(user_name, user_password, user_namalengkap, user_role) VALUES (%s, %s, %s, %s)"
+            val = arr_user
+            cursor.execute(sql, val)
+            conn.commit()
+            self.close_db(self)
+            return 'berhasil'
+        except Exception as e:
+            return e
+    def update_user(self, arr_user):
+        try: 
+            self.open_db(self)
+            sql = "update users set user_name= %s, user_password=%s, user_namalengkap=%s, user_role=%s where user_id=%s"
+            val = arr_user
+            cursor.execute(sql, val)
+            conn.commit()
+            self.close_db(self)
+            return 'berhasil'
+        except Exception as e:
+            return e
     def delete_model(self, id_model):
         try: 
             self.open_db(self)
             sql = "Delete from model where model_id = %s"
             val = id_model
+            cursor.execute(sql, val)
+            conn.commit()
+            self.close_db(self)
+            return 'berhasil'
+        except Exception as e:
+            return e
+    def delete_user(self, id_user):
+        try: 
+            self.open_db(self)
+            sql = "Delete from users where user_id = %s"
+            val = id_user
             cursor.execute(sql, val)
             conn.commit()
             self.close_db(self)
