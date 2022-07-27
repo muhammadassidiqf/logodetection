@@ -1,6 +1,7 @@
 from distutils.log import Log
 from posixpath import split
-from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash, Response, send_from_directory
+from urllib import response
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash, Response, send_from_directory, stream_with_context, render_template_string
 from werkzeug.utils import secure_filename
 from inspect import ismethod
 # from flask_sqlalchemy import SQLAlchemy
@@ -18,8 +19,8 @@ import cv2
 import numpy as np
 import io
 import xlwt
-
-
+import json
+from ast import literal_eval
 # from Video import Video
 from logo_db.YoloDetector import YoloDetector
 
@@ -235,6 +236,12 @@ def upload_file():
             flash('No selected file')
             return redirect(request.url)
 
+def jsonResponseFactory(data):
+    '''Return a callable in top of Response'''
+    def callable(response=None, *args, **kwargs):
+        '''Return a response with JSON data from factory context'''
+        return Response(json.dumps(data), *args, **kwargs)
+    return callable
 
 @app.route('/detect', methods=['POST', 'GET'])
 def detection():
@@ -259,29 +266,71 @@ def detection():
                 model_id = request.form.getlist('model_id')
                 ads_value = request.form.get('ads_value', type=str)
                 ads = ads_value.replace(",", "")
-                filename_awal = str(filename)
+                
+                str_model = [] 
+                model_array = [] 
                 for i in model_id:
-                    filename_akhir = str(filename.rsplit(
-                        '.', 1)[0]) + '_' + str(time.time()) + '.mp4'
-                    LogoDB.add_video(self=LogoDB, arr_video=[
-                                     filename_awal, filename_akhir, i, ads, session['user_id']])
-                    video = LogoDB.get_one_video(
-                        self=LogoDB, video_id=filename_akhir)
-                    video_id = filename_akhir
-                    model = video['model_id']
-                    # print(len(model_id))
-                    yolo = YoloDetector()
-                    yolomain = yolo.main(
-                        id_model=model, video_id=video_id, thresh=0.5, ads=ads)
-                if(yolomain):
-                    timing = time.time() - start
-                    datanya = LogoDB.get_output(self=LogoDB, video_id=video_id)
-                    return jsonify({'filename': str(filename_akhir), 'timing': timing, 'datanya': datanya, 'video_id': video['video_id']})
-                else:
-                    print('gagal')
+                    model_array += [i]
+                    model = LogoDB.get_one_model(self=LogoDB,model_id=i)
+                    str_model += [model['model_nama']]
+                # print(model_array)
+                # return response(stream_with_context(process(filename,model_id,ads)))
+                # return redirect(302,jsonResponseFactory({'timing': timing, 'model': str_model}),url_for("process", filename=filename, model_id=model_id, ads=ads))
+                return jsonify({'timing': timing, 'model': str_model,'filename':filename, 'model_id':model_array, 'ads':ads })
+                # return jsonify({'timing': timing, 'model': str_model},redirect(url_for("process", filename=filename, model_id=model_id, ads=ads)))
+                # filename_awal = str(filename)
+                # for i in model_id:
+                #     filename_akhir = str(filename.rsplit(
+                #         '.', 1)[0]) + '_' + str(time.time()) + '.mp4'
+                #     LogoDB.add_video(self=LogoDB, arr_video=[
+                #                      filename_awal, filename_akhir, i, ads, session['user_id']])
+                #     video = LogoDB.get_one_video(
+                #         self=LogoDB, video_id=filename_akhir)
+                #     video_id = filename_akhir
+                #     model = video['model_id']
+                #     # print(len(model_id))
+                #     yolo = YoloDetector()
+                #     yolomain = yolo.main(
+                #         id_model=model, video_id=video_id, thresh=0.5, ads=ads)
+                # if(yolomain):
+                #     timing = time.time() - start
+                #     datanya = LogoDB.get_output(self=LogoDB, video_id=video_id)
+                #     return jsonify({'filename': str(filename_akhir), 'timing': timing, 'datanya': datanya, 'video_id': video['video_id']},redirect(url_for("process", accuracy=accuracy, recall=recall, precision=precision, f1=f1)))
+                # else:
+                #     print('gagal')
+                
         else:
             flash('No selected file')
             return redirect(request.url)
+
+@app.route('/process/<filename>/<model_id>/<ads>', methods=['POST', 'GET'])
+def process(filename, model_id, ads):
+    # ads = request.form.get('ads', type=str)
+    # filename = request.form.get('filename', type=str) 
+    # model_id = request.form.get('model_id', type=str) 
+    start = time.time()
+    filename_awal = str(filename)
+    print(model_id.split(','))
+    model_id = model_id.split(',')
+    for i in model_id:
+        filename_akhir = str(filename.rsplit(
+            '.', 1)[0]) + '_' + str(time.time()) + '.mp4'
+        LogoDB.add_video(self=LogoDB, arr_video=[filename_awal, filename_akhir, i, ads, session['user_id']])
+        video = LogoDB.get_one_video(self=LogoDB, video_id=filename_akhir)
+        video_id = filename_akhir
+        model = video['model_id']
+        # print(len(model_id))
+        yolo = YoloDetector()
+        print(i)
+        yolomain = yolo.main(id_model=model, video_id=video_id, thresh=0.5, ads=ads)
+    if(yolomain):
+        datanya = LogoDB.get_output(self=LogoDB, video_id=video_id)
+        # return ({'filename': str(filename_akhir), 'datanya': datanya, 'video_id': video['video_id']})
+        timing = time.time() - start
+        return jsonify({'filename_akhir': str(filename_akhir), 'timing_proses': timing, 'datanya': datanya, 'video_id': video['video_id']})
+        # return render_template('upload_video.html', filename=str(filename_akhir), datanya=datanya, video_id=video['video_id'])
+    else:
+        print('gagal')
 
 @app.route('/add_users', methods=['POST'])
 def create_user():
@@ -478,4 +527,4 @@ def detail_video(video_id):
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0")
+    app.run(debug=True, host="127.0.0.1")

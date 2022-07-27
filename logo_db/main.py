@@ -12,7 +12,8 @@ class LogoDB():
     conn = cursor = None
     def open_db(self):
         global conn, cursor
-        conn = pymysql.connect(host='103.104.130.27',user='logoadmin',password='Br4v4c0+*/',database='logodetection',charset='utf8mb4',cursorclass=pymysql.cursors.DictCursor)
+        conn = pymysql.connect(host='localhost',user='root',password='',database='logodetection',charset='utf8mb4',cursorclass=pymysql.cursors.DictCursor)
+        # conn = pymysql.connect(host='103.104.130.27',user='logoadmin',password='Br4v4c0+*/',database='logodetection',charset='utf8mb4',cursorclass=pymysql.cursors.DictCursor)
         cursor = conn.cursor()	
     def close_db(self):
         global conn, cursor

@@ -22,7 +22,16 @@ Logo Detection
   href="{{ url_for('static',filename='vendors/datatables-buttons/css/buttons.bootstrap4.min.css')}}">
 <link rel="stylesheet" href="{{ url_for('static',filename='vendors/datatables-select/css/select.bootstrap4.min.css')}}">
 <link rel="stylesheet" href="{{ url_for('static',filename='vendors/ti-icons/css/themify-icons.css')}}">
-
+<style>
+  
+  .select2-selection__rendered {
+    color: white !important;
+    
+  } 
+  .select2-selection__choice__remove{
+    color: white !important;
+    }
+</style>
 {% endblock %}
 {% block navbar %}
 <nav class="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex align-items-top flex-row">
@@ -117,7 +126,7 @@ Logo Detection
                         <div class="input-group-prepend">
                           <span class="input-group-text bg-primary text-white">Rp. </span>
                         </div>
-                        <input type="text" class="form-control uang" id="ads_value" name="ads_value">
+                        <input type="text" class="form-control uang" id="ads_value" name="ads_value" required>
                         <div class="input-group-append">
                           <span class="input-group-text">.00</span>
                         </div>
@@ -128,18 +137,13 @@ Logo Detection
                 <div class="col-6">
                   <div class="row">
                     <label for="gambar" class="col-sm-12 col-form-label">Model</label>
-                    {% for x in data %}
-                    <div class="col-sm-2">
-                      <div class="form-group">
-                        <div class="form-check">
-                          <label class="form-check-label">
-                            <input type="checkbox" class="form-check-input" name="model_id" id="model_id" value="{{ x['model_id']}}">
-                            {{ x['model_nama']}}
-                          </label>
-                        </div>
-                      </div>
+                    <div class="col-sm-12">
+                      <select name="model_id" id="model_id" class="form-control select2" multiple required placeholder="Pilih Model" style="color: white;">
+                        {% for x in data %}
+                        <option value="{{ x['model_id']}}">{{ x['model_nama']}}</option>
+                        {% endfor %}
+                      </select>
                     </div>
-                    {% endfor %}
                   </div>
                 </div>
               </div>
@@ -268,7 +272,6 @@ Logo Detection
             .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         });
       }));
-
       $('.dropify').dropify({
         messages: {
           'default': '',
@@ -311,7 +314,7 @@ Logo Detection
                     opacity: 0.8
                   }  }); 
                 $('div.container-scroller').block({ 
-                  message: '<div class="text-primary"><span class="spinner-border text-primary"></span> Loading...</div>',
+                  message: '<div class="text-primary"><span class="spinner-border text-primary"></span> Loading '+model.join(", ")+'...</div>',
                   css: {
                     backgroundColor: 'transparent',
                     border: '0'
@@ -327,54 +330,97 @@ Logo Detection
           },
           success: function (d, textStatus, jqXHR) {
             // console.log(d);
-            $('#hasilnya').empty();
-            // $('#bw_form').show();
+            // $('#hasilnya').empty();
+            // // $('#bw_form').show();
             let num = d.timing;
             let n = num.toFixed(2);
-            // $('body').append(d.htmlresponse);
-            // if (d.bw_path != null || d.bw_path != '') {
-            //   $('#bw_form').empty();
-            // $('#res').attr('src', d.res);
-            // console.log(d.datanya);
-            $('.navbar').unblock();
-            $('div.container-scroller').unblock()
-            Swal.fire(
-              'Success ! Video uploaded',
-              'Process time: ' + n + ' seconds',
-              'success'
-            )
-            $('#hasilnya').attr("src", 'display_video/' + d.filename);
-            $('#export').attr("href", 'export/' + d.video_id);
-            $('#example1').DataTable({
-              destroy: true,
-              data: d.datanya,
-              columns: [
-                { "data": 'num' },
-                { "data": 'model_nama' },
-                { "data": 'start_time' },
-                { "data": 'end_time' },
-                { "data": 'durasi_sec' },
-                { "data": commify('ads_per_menit') },
-              ],
+            // // $('body').append(d.htmlresponse);
+            // // if (d.bw_path != null || d.bw_path != '') {
+            // //   $('#bw_form').empty();
+            // // $('#res').attr('src', d.res);
+            // // console.log(d.datanya); 
+            Swal.fire({
+              icon: 'success',
+              title:'Success! Video Uploaded',
+              timer: 3000,
+              timerProgressBar: true,
+              showConfirmButton: false,
+              text: 'Process time: ' + n + ' seconds'
+            })
+            $.ajax({
+              url: '/process/'+d.filename+'/'+d.model_id.join(",")+'/'+d.ads,
+              dataType: 'json',
+              contentType: false,
+              processData: false,
+              data: form_data,
+              type: 'POST',
+              async: true,
+              xhr: function () {
+                var xhr = new window.XMLHttpRequest();
+                xhr.upload.addEventListener("progress", function (evt) {
+                  if (evt.lengthComputable) {
+                    var percentComplete = evt.loaded / evt.total;
+                    $('.spinner-border').css('display', 'inline-block');
+                    $('.navbar').block({ 
+                      message: null,
+                      css: {
+                        backgroundColor: 'transparent',
+                        border: '0'
+                      },
+                      overlayCSS: {
+                        backgroundColor: '#fff',
+                        opacity: 0.8
+                      }  }); 
+                    $('div.container-scroller').block({ 
+                      message: '<div class="text-primary"><span class="spinner-border text-primary"></span> Proses dengan model '+d.model.join(", ")+'...</div>',
+                      css: {
+                        backgroundColor: 'transparent',
+                        border: '0'
+                      },
+                      overlayCSS: {
+                        backgroundColor: '#fff',
+                        opacity: 0.8
+                      } 
+                    });
+                  }
+                }, false);
+                return xhr;
+              },
+              success: function (d) {
+                $('#hasilnya').empty();
+                let num = d.timing_proses;
+                let n = num.toFixed(2);
+                $('.navbar').unblock();
+                $('div.container-scroller').unblock()
+                Swal.fire(
+                  'Success! Video completed',
+                  'Process time: ' + n + ' seconds',
+                  'success'
+                )
+                $('#hasilnya').attr("src", 'display_video/' + d.filename_akhir);
+                $('#export').attr("href", 'export/' + d.video_id);
+                $('#example1').DataTable({
+                  destroy: true,
+                  data: d.datanya,
+                  columns: [
+                    { "data": 'num' },
+                    { "data": 'model_nama' },
+                    { "data": 'start_time' },
+                    { "data": 'end_time' },
+                    { "data": 'durasi_sec' },
+                    { "data": commify('ads_per_menit') },
+                  ],
+                });
+              }
             });
-
-            //   $('#bw_form').append('<img src="/' + d.bw_path + '" class="img-fluid" id="bw" alt="">');
-            // }
-            // $('#bw_form').hide();
-            // $('#bw_res').show();
-            // $('#bw_res').append(d.htmlresponse);
-            // alert('Video berhasil di upload!!!\n Waktu Proses: ' + n + ' Detik')
-            // $('.progress-bar').attr('aria-valuenow', 100).css('width', '100%');
-            // alert('Video berhasil di upload!!!');
             document.getElementById('btn-upload').style.pointerEvents = 'auto';
-            // location.reload();
-            // console.log(textStatus);
-            // console.log(jqXHR);
           },
           // }).done(function (d, textStatus, jqXHR) {
 
         }).fail(function (d, textStatus, jqXHR) {
           // console.log(d);
+          $('.navbar').unblock();
+          $('div.container-scroller').unblock()
           alert('Failed upload video !!!');
         });
 
