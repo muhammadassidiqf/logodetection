@@ -303,26 +303,35 @@ def detection():
             flash('No selected file')
             return redirect(request.url)
 
-@app.route('/process/<filename>/<model_id>/<ads>', methods=['POST', 'GET'])
-def process(filename, model_id, ads):
+@app.route('/process', methods=['POST', 'GET'])
+def process():
+    f = request.files['file']
+    filename = secure_filename(f.filename)
+    ads_value = request.form.get('ads_value', type=str)
+    ads = ads_value.replace(",", "")
+    # filename = request.form.get('filename', type=str) 
+    model_id = request.form.getlist('model_id')
     # ads = request.form.get('ads', type=str)
     # filename = request.form.get('filename', type=str) 
     # model_id = request.form.get('model_id', type=str) 
     start = time.time()
     filename_awal = str(filename)
-    print(model_id.split(','))
-    model_id = model_id.split(',')
+    # print(model_id.split(','))
+    # print(filename_awal)
+    # model_id = model_id.split(',')
     for i in model_id:
         filename_akhir = str(filename.rsplit(
             '.', 1)[0]) + '_' + str(time.time()) + '.mp4'
-        LogoDB.add_video(self=LogoDB, arr_video=[filename_awal, filename_akhir, i, ads, session['user_id']])
-        video = LogoDB.get_one_video(self=LogoDB, video_id=filename_akhir)
+        LogoDB.add_video(self=LogoDB, arr_video=[
+                            filename_awal, filename_akhir, i, ads, session['user_id']])
+        video = LogoDB.get_one_video(
+            self=LogoDB, video_id=filename_akhir)
         video_id = filename_akhir
         model = video['model_id']
         # print(len(model_id))
         yolo = YoloDetector()
-        print(i)
-        yolomain = yolo.main(id_model=model, video_id=video_id, thresh=0.5, ads=ads)
+        yolomain = yolo.main(
+            id_model=model, video_id=video_id, thresh=0.5, ads=ads)
     if(yolomain):
         datanya = LogoDB.get_output(self=LogoDB, video_id=video_id)
         # return ({'filename': str(filename_akhir), 'datanya': datanya, 'video_id': video['video_id']})
@@ -331,6 +340,7 @@ def process(filename, model_id, ads):
         # return render_template('upload_video.html', filename=str(filename_akhir), datanya=datanya, video_id=video['video_id'])
     else:
         print('gagal')
+
 
 @app.route('/add_users', methods=['POST'])
 def create_user():
@@ -527,4 +537,4 @@ def detail_video(video_id):
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host="127.0.0.1")
+    app.run(debug=True, host="0.0.0.0", port=80)

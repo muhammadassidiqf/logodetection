@@ -23,14 +23,14 @@ Logo Detection
 <link rel="stylesheet" href="{{ url_for('static',filename='vendors/datatables-select/css/select.bootstrap4.min.css')}}">
 <link rel="stylesheet" href="{{ url_for('static',filename='vendors/ti-icons/css/themify-icons.css')}}">
 <style>
-  
   .select2-selection__rendered {
     color: white !important;
-    
-  } 
-  .select2-selection__choice__remove{
+
+  }
+
+  .select2-selection__choice__remove {
     color: white !important;
-    }
+  }
 </style>
 {% endblock %}
 {% block navbar %}
@@ -138,7 +138,8 @@ Logo Detection
                   <div class="row">
                     <label for="gambar" class="col-sm-12 col-form-label">Model</label>
                     <div class="col-sm-12">
-                      <select name="model_id" id="model_id" class="form-control select2" multiple required placeholder="Pilih Model" style="color: white;">
+                      <select name="model_id" id="model_id" class="form-control select2" multiple required
+                        placeholder="Pilih Model" style="color: white;">
                         {% for x in data %}
                         <option value="{{ x['model_id']}}">{{ x['model_nama']}}</option>
                         {% endfor %}
@@ -252,10 +253,10 @@ Logo Detection
   <!-- End plugin js for this page -->
   <script src="{{ url_for('static',filename='vendors/datatables/jquery.dataTables.min.js')}}"></script>
   <script src="{{ url_for('static',filename='vendors/datatables-bs4/js/dataTables.bootstrap4.min.js')}}"></script>
-  <script
-    src="{{ url_for('static',filename='vendors/datatables-responsive/js/dataTables.responsive.min.js')}}"></script>
-  <script
-    src="{{ url_for('static',filename='vendors/datatables-responsive/js/responsive.bootstrap4.min.js')}}"></script>
+  <script src="{{ url_for('static',filename='vendors/datatables-responsive/js/dataTables.responsive.min.js')}}">
+  </script>
+  <script src="{{ url_for('static',filename='vendors/datatables-responsive/js/responsive.bootstrap4.min.js')}}">
+  </script>
   <script src="{{ url_for('static',filename='vendors/datatables-buttons/js/dataTables.buttons.min.js')}}"></script>
   <script src="{{ url_for('static',filename='vendors/datatables-buttons/js/buttons.bootstrap4.min.js')}}"></script>
   <script src="{{ url_for('static',filename='vendors/datatables-buttons/js/buttons.html5.min.js')}}"></script>
@@ -294,40 +295,6 @@ Logo Detection
           data: form_data,
           type: 'POST',
           async: true,
-          xhr: function () {
-            var xhr = new window.XMLHttpRequest();
-            xhr.upload.addEventListener("progress", function (evt) {
-              if (evt.lengthComputable) {
-                var percentComplete = evt.loaded / evt.total;
-                // console.log(percentComplete);
-                // $('#progress').html('<b> Process Uploading <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div> </b>');
-                // $('.progress-bar').width('50%');
-                $('.spinner-border').css('display', 'inline-block');
-                $('.navbar').block({ 
-                  message: null,
-                  css: {
-                    backgroundColor: 'transparent',
-                    border: '0'
-                  },
-                  overlayCSS: {
-                    backgroundColor: '#fff',
-                    opacity: 0.8
-                  }  }); 
-                $('div.container-scroller').block({ 
-                  message: '<div class="text-primary"><span class="spinner-border text-primary"></span> Loading '+model.join(", ")+'...</div>',
-                  css: {
-                    backgroundColor: 'transparent',
-                    border: '0'
-                  },
-                  overlayCSS: {
-                    backgroundColor: '#fff',
-                    opacity: 0.8
-                  } 
-                });
-              }
-            }, false);
-            return xhr;
-          },
           success: function (d, textStatus, jqXHR) {
             // console.log(d);
             // $('#hasilnya').empty();
@@ -341,14 +308,14 @@ Logo Detection
             // // console.log(d.datanya); 
             Swal.fire({
               icon: 'success',
-              title:'Success! Video Uploaded',
+              title: 'Success! Video Uploaded',
               timer: 3000,
               timerProgressBar: true,
               showConfirmButton: false,
               text: 'Process time: ' + n + ' seconds'
             })
             $.ajax({
-              url: '/process/'+d.filename+'/'+d.model_id.join(",")+'/'+d.ads,
+              url: '/process',
               dataType: 'json',
               contentType: false,
               processData: false,
@@ -361,7 +328,7 @@ Logo Detection
                   if (evt.lengthComputable) {
                     var percentComplete = evt.loaded / evt.total;
                     $('.spinner-border').css('display', 'inline-block');
-                    $('.navbar').block({ 
+                    $('.navbar').block({
                       message: null,
                       css: {
                         backgroundColor: 'transparent',
@@ -370,9 +337,11 @@ Logo Detection
                       overlayCSS: {
                         backgroundColor: '#fff',
                         opacity: 0.8
-                      }  }); 
-                    $('div.container-scroller').block({ 
-                      message: '<div class="text-primary"><span class="spinner-border text-primary"></span> Proses dengan model '+d.model.join(", ")+'...</div>',
+                      }
+                    });
+                    $('div.container-scroller').block({
+                      message: '<div class="text-primary"><span class="spinner-border text-primary"></span> Proses dengan model ' +
+                        d.model.join(", ") + '...</div>',
                       css: {
                         backgroundColor: 'transparent',
                         border: '0'
@@ -380,13 +349,14 @@ Logo Detection
                       overlayCSS: {
                         backgroundColor: '#fff',
                         opacity: 0.8
-                      } 
+                      }
                     });
                   }
                 }, false);
                 return xhr;
               },
               success: function (d) {
+                console.log(d);
                 $('#hasilnya').empty();
                 let num = d.timing_proses;
                 let n = num.toFixed(2);
@@ -402,13 +372,24 @@ Logo Detection
                 $('#example1').DataTable({
                   destroy: true,
                   data: d.datanya,
-                  columns: [
-                    { "data": 'num' },
-                    { "data": 'model_nama' },
-                    { "data": 'start_time' },
-                    { "data": 'end_time' },
-                    { "data": 'durasi_sec' },
-                    { "data": commify('ads_per_menit') },
+                  columns: [{
+                      "data": 'num'
+                    },
+                    {
+                      "data": 'model_nama'
+                    },
+                    {
+                      "data": 'start_time'
+                    },
+                    {
+                      "data": 'end_time'
+                    },
+                    {
+                      "data": 'durasi_sec'
+                    },
+                    {
+                      "data": commify('ads_per_menit')
+                    },
                   ],
                 });
               }
@@ -425,6 +406,7 @@ Logo Detection
         });
 
       });
+
       function commify(n) {
         var parts = n.toString().split(".");
         const numberPart = parts[0];
@@ -432,19 +414,21 @@ Logo Detection
         const thousands = /\B(?=(\d{3})+(?!\d))/g;
         return numberPart.replace(thousands, ".") + (decimalPart ? "," + decimalPart : "");
       }
+
       function show_data(datanya) {
         var table = document.getElementById("example1").getElementsByTagName('tbody')[0];
         table.innerHTML = "";
         var tr = "";
         datanya.forEach(x => {
           tr += '<tr>';
-          tr += '<td>' + x['num'] + '</td>' + '<td>' + x['model_nama'] + '</td>' + '<td>' + x['start_time'] + '</td>' + '<td>' + x['end_time'] + '</td>' + '<td>' + x['durasi_sec'] + '</td>' + '<td>Rp. ' + commify(x['ads_per_menit']) + '</td>'
+          tr += '<td>' + x['num'] + '</td>' + '<td>' + x['model_nama'] + '</td>' + '<td>' + x['start_time'] +
+            '</td>' + '<td>' + x['end_time'] + '</td>' + '<td>' + x['durasi_sec'] + '</td>' + '<td>Rp. ' +
+            commify(x['ads_per_menit']) + '</td>'
           tr += '</tr>'
 
         })
         table.innerHTML += tr;
       }
     });
-
   </script>
   {% endblock %}

@@ -191,7 +191,8 @@ Logo Detection
                     <td>{{ row['video_filename_awal'] }}</td>
                     <td>{{ row['model_nama'] }}</td>
                     <td>Rp. {{ '{:,.2f}'.format(row['ads_rate']) }}</td>
-                    <td>{% if(row['total_ads']) %} Rp. {{ '{:,.2f}'.format(row['total_ads']) }} {% else %} 0 {% endif %}</td>
+                    <td>{% if(row['total_ads']) %} Rp. {{ '{:,.2f}'.format(row['total_ads']) }} {% else %} 0 {% endif %}
+                    </td>
                     <td>{{ row['uploaded_at'].strftime('%d %b %Y - %H:%M:%S') }}</td>
                     <td>
                       <a href="{{ url_for('detail_video', video_id=row['video_id']) }}"
@@ -250,7 +251,9 @@ Logo Detection
                     <td>{{ row['model_cfg'] }}</td>
                     <td>{{ row['model_label'] }}</td>
                     <td>
-                      <a href="javascript:;" class="btn btn-danger btn-rounded btn-md btn-icon btn-delete" data-id="{{ row['model_id'] }}" data-url="/hapus_model" data-delmsg="Model {{ row['model_nama'] }}"><i class="icon-trash"></i> Hapus</a>
+                      <a href="javascript:;" class="btn btn-danger btn-rounded btn-md btn-icon btn-delete"
+                        data-id="{{ row['model_id'] }}" data-url="/hapus_model"
+                        data-delmsg="Model {{ row['model_nama'] }}"><i class="icon-trash"></i> Hapus</a>
                     </td>
                   </tr>
                   {% endfor %}
@@ -272,7 +275,8 @@ Logo Detection
               </div>
               <div class="col-6">
                 <div style="float: right;">
-                  <a href="#" class="btn btn-primary btn-md btn-icon-text" data-bs-toggle="modal" data-bs-target="#add_user">
+                  <a href="#" class="btn btn-primary btn-md btn-icon-text" data-bs-toggle="modal"
+                    data-bs-target="#add_user">
                     <i class="ti-plus btn-icon-prepend"></i>
                     Add User
                   </a>
@@ -304,14 +308,20 @@ Logo Detection
                     <td>{{ row['user_password'] }}</td>
                     <td>
                       {% if(row['user_role'] == 0) %}
-                        User
+                      User
                       {% else %}
-                        Admin
+                      Admin
                       {% endif %}
                     </td>
                     <td>
-                      <a href="javascript:;" class="btn btn-warning btn-rounded btn-md btn-icon" data-bs-toggle="modal" data-bs-target="#edit" data-id="{{ row['user_id'] }}" data-nama="{{ row['user_namalengkap'] }}" data-username="{{ row['user_name'] }}" data-role="{{ row['user_role'] }}" data-password="{{ row['user_password'] }}" onclick="showedit(this)"><i class="mdi mdi-lead-pencil"></i> Edit</a>
-                      <a href="javascript:;" class="btn btn-danger btn-rounded btn-md btn-icon btn-delete-user" data-id="{{ row['user_id'] }}" data-url="/hapus_user" data-delmsg="User {{ row['user_namalengkap'] }}"><i class="icon-trash"></i> Hapus</a>
+                      <a href="javascript:;" class="btn btn-warning btn-rounded btn-md btn-icon" data-bs-toggle="modal"
+                        data-bs-target="#edit" data-id="{{ row['user_id'] }}" data-nama="{{ row['user_namalengkap'] }}"
+                        data-username="{{ row['user_name'] }}" data-role="{{ row['user_role'] }}"
+                        data-password="{{ row['user_password'] }}" onclick="showedit(this)"><i
+                          class="mdi mdi-lead-pencil"></i> Edit</a>
+                      <a href="javascript:;" class="btn btn-danger btn-rounded btn-md btn-icon btn-delete-user"
+                        data-id="{{ row['user_id'] }}" data-url="/hapus_user"
+                        data-delmsg="User {{ row['user_namalengkap'] }}"><i class="icon-trash"></i> Hapus</a>
                     </td>
                   </tr>
                   {% endfor %}
@@ -339,7 +349,8 @@ Logo Detection
                 <div class="row">
                   <div class="form-group">
                     <label>Model Name</label>
-                    <input type="text" class="form-control" name="model_name" id="model_name" placeholder="Name Model" aria-label="Name Model" required>
+                    <input type="text" class="form-control" name="model_name" id="model_name" placeholder="Name Model"
+                      aria-label="Name Model" required>
                   </div>
                 </div>
                 <div class="row">
@@ -347,7 +358,8 @@ Logo Detection
                     <label>Model Weight</label>
                     <div class="col-sm-12">
                       <div class="custom-file">
-                        <input type="file" name="model_weights" id="model_weights" class="dropify" data-allowed-file-extensions="weights" required>
+                        <input type="file" name="model_weights" id="model_weights" class="dropify"
+                          data-allowed-file-extensions="weights" required>
                       </div>
                     </div>
                   </div>
@@ -357,7 +369,8 @@ Logo Detection
                     <label>Model Config</label>
                     <div class="col-sm-12">
                       <div class="custom-file">
-                        <input type="file" name="model_config" id="model_config" class="dropify" data-allowed-file-extensions="cfg" required>
+                        <input type="file" name="model_config" id="model_config" class="dropify"
+                          data-allowed-file-extensions="cfg" required>
                       </div>
                     </div>
                   </div>
@@ -367,7 +380,8 @@ Logo Detection
                     <label>Model Label</label>
                     <div class="col-sm-12">
                       <div class="custom-file">
-                        <input type="file" name="model_label" id="model_label" class="dropify" data-allowed-file-extensions="names" required>
+                        <input type="file" name="model_label" id="model_label" class="dropify"
+                          data-allowed-file-extensions="names" required>
                       </div>
                     </div>
                   </div>
@@ -397,22 +411,26 @@ Logo Detection
                 <div class="row">
                   <div class="form-group">
                     <label>Name</label>
-                    <input type="text" class="form-control" name="user_namalengkap" id="nama" placeholder="Name" aria-label="Name" required>
+                    <input type="text" class="form-control" name="user_namalengkap" id="nama" placeholder="Name"
+                      aria-label="Name" required>
                   </div>
                 </div>
                 <div class="row">
                   <div class="form-group">
                     <label>Username</label>
-                    <input type="text" class="form-control" name="user_name" id="username" placeholder="Username" aria-label="Username" required>
+                    <input type="text" class="form-control" name="user_name" id="username" placeholder="Username"
+                      aria-label="Username" required>
                   </div>
                 </div>
                 <div class="row">
                   <div class="form-group">
                     <label for="exampleInputEmail">Password</label>
                     <div class="input-group">
-                      <input type="password" class="form-control" name="user_password" id="user_password" placeholder="Password" required>
+                      <input type="password" class="form-control" name="user_password" id="user_password"
+                        placeholder="Password" required>
                       <div class="input-group-prepend bg-transparent">
-                        <span class="input-group-text bg-transparent toggle-new"><i class="mdi mdi-eye text-primary" style="font-size: 12px; cursor: pointer;"></i></span>
+                        <span class="input-group-text bg-transparent toggle-new"><i class="mdi mdi-eye text-primary"
+                            style="font-size: 12px; cursor: pointer;"></i></span>
                       </div>
                     </div>
                   </div>
@@ -455,22 +473,26 @@ Logo Detection
                 <div class="row">
                   <div class="form-group">
                     <label>Name</label>
-                    <input type="text" class="form-control" name="user_namalengkap" id="nama" placeholder="Name" aria-label="Name" required>
+                    <input type="text" class="form-control" name="user_namalengkap" id="nama" placeholder="Name"
+                      aria-label="Name" required>
                   </div>
                 </div>
                 <div class="row">
                   <div class="form-group">
                     <label>Username</label>
-                    <input type="text" class="form-control" name="user_name" id="username" placeholder="Username" aria-label="Username" required>
+                    <input type="text" class="form-control" name="user_name" id="username" placeholder="Username"
+                      aria-label="Username" required>
                   </div>
                 </div>
                 <div class="row">
                   <div class="form-group">
                     <label for="exampleInputEmail">Password</label>
                     <div class="input-group">
-                      <input type="password" class="form-control" name="user_password" id="password" placeholder="Password" required>
+                      <input type="password" class="form-control" name="user_password" id="password"
+                        placeholder="Password" required>
                       <div class="input-group-prepend bg-transparent">
-                        <span class="input-group-text bg-transparent toggle-confirm"><i class="mdi mdi-eye text-primary" style="font-size: 12px; cursor: pointer;"></i></span>
+                        <span class="input-group-text bg-transparent toggle-confirm"><i class="mdi mdi-eye text-primary"
+                            style="font-size: 12px; cursor: pointer;"></i></span>
                       </div>
                     </div>
                   </div>
@@ -511,10 +533,10 @@ Logo Detection
   <script src="{{ url_for('static',filename='vendors/sweetalert2/sweetalert2.all.min.js')}}"></script>
   <script src="{{ url_for('static',filename='vendors/datatables/jquery.dataTables.min.js')}}"></script>
   <script src="{{ url_for('static',filename='vendors/datatables-bs4/js/dataTables.bootstrap4.min.js')}}"></script>
-  <script
-    src="{{ url_for('static',filename='vendors/datatables-responsive/js/dataTables.responsive.min.js')}}"></script>
-  <script
-    src="{{ url_for('static',filename='vendors/datatables-responsive/js/responsive.bootstrap4.min.js')}}"></script>
+  <script src="{{ url_for('static',filename='vendors/datatables-responsive/js/dataTables.responsive.min.js')}}">
+  </script>
+  <script src="{{ url_for('static',filename='vendors/datatables-responsive/js/responsive.bootstrap4.min.js')}}">
+  </script>
   <script src="{{ url_for('static',filename='vendors/datatables-buttons/js/dataTables.buttons.min.js')}}"></script>
   <script src="{{ url_for('static',filename='vendors/datatables-buttons/js/buttons.bootstrap4.min.js')}}"></script>
   <script src="{{ url_for('static',filename='vendors/datatables-buttons/js/buttons.html5.min.js')}}"></script>
@@ -526,74 +548,74 @@ Logo Detection
   {%block scripting %}
   <script>
     function showedit(elem) {
-        var id = $(elem).data('id');
-        var nama= $(elem).data('nama');
-        var username = $(elem).data('username');
-        var password= $(elem).data('password');
-        var role = $(elem).data('role');
-        // console.log(model_name);
-        // console.log(jenis);
-        $("#form_edit_user #user_id").val(id);
-        $("#form_edit_user #nama").val(nama);
-        $("#form_edit_user #username").val(username);
-        $("#form_edit_user #password").val(password);
-        $("#form_edit_user #role").val(role).change();
+      var id = $(elem).data('id');
+      var nama = $(elem).data('nama');
+      var username = $(elem).data('username');
+      var password = $(elem).data('password');
+      var role = $(elem).data('role');
+      // console.log(model_name);
+      // console.log(jenis);
+      $("#form_edit_user #user_id").val(id);
+      $("#form_edit_user #nama").val(nama);
+      $("#form_edit_user #username").val(username);
+      $("#form_edit_user #password").val(password);
+      $("#form_edit_user #role").val(role).change();
     }
     $(function () {
       $("#form_add").on("submit", function (e) { //id of form 
-            e.preventDefault();
-            var form_data = new FormData($('#form_add')[0]);
-            // console.log(form_data);
-            $.ajax({
-              url: '/add_model',
-              dataType: 'json',
-              contentType: false,
-              processData: false,
-              data: form_data,
-              type: 'POST',
-              async: true,
-              success: function (d, textStatus, jqXHR) {
-                if (d.status) {
-                    Swal.fire({
-                        icon: 'success',
-                        type: 'success',
-                        title: d.message,
-                        showConfirmButton: true
-                    }).then((result) => {
-                        location.reload()
-                    })
-                } else if (d.error) {
-                  Swal.fire({
-                        icon: 'warning',
-                        type: 'warning',
-                        title: d.message,
-                        showConfirmButton: true
-                    }).then((result) => {
-                        location.reload()
-                    })
-                } else {
-                    Swal.fire(
-                        'Mohon Maaf!',
-                        'Data gagal diperbarui',
-                        'error'
-                    )
-                }
-              },
-              // }).done(function (d, textStatus, jqXHR) {
+        e.preventDefault();
+        var form_data = new FormData($('#form_add')[0]);
+        // console.log(form_data);
+        $.ajax({
+          url: '/add_model',
+          dataType: 'json',
+          contentType: false,
+          processData: false,
+          data: form_data,
+          type: 'POST',
+          async: true,
+          success: function (d, textStatus, jqXHR) {
+            if (d.status) {
+              Swal.fire({
+                icon: 'success',
+                type: 'success',
+                title: d.message,
+                showConfirmButton: true
+              }).then((result) => {
+                location.reload()
+              })
+            } else if (d.error) {
+              Swal.fire({
+                icon: 'warning',
+                type: 'warning',
+                title: d.message,
+                showConfirmButton: true
+              }).then((result) => {
+                location.reload()
+              })
+            } else {
+              Swal.fire(
+                'Mohon Maaf!',
+                'Data gagal diperbarui',
+                'error'
+              )
+            }
+          },
+          // }).done(function (d, textStatus, jqXHR) {
 
-            }).fail(function (d, textStatus, jqXHR) {
-              alert('Failed upload video !!!');
-            });
+        }).fail(function (d, textStatus, jqXHR) {
+          alert('Failed upload video !!!');
         });
+      });
     });
-    
-		$(document).on('click', '.toggle-new', function() {
+
+    $(document).on('click', '.toggle-new', function () {
       $(this).toggleClass("fa-eye fa-eye-slash");
 
       var input = $("#user_password");
       input.attr('type') === 'password' ? input.attr('type', 'text') : input.attr('type', 'password')
     });
-		$(document).on('click', '.toggle-confirm', function() {
+    $(document).on('click', '.toggle-confirm', function () {
       $(this).toggleClass("fa-eye fa-eye-slash");
 
       var input = $("#password");
@@ -601,105 +623,105 @@ Logo Detection
     });
     $(function () {
       $("#form_add_user").on("submit", function (e) { //id of form 
-            e.preventDefault();
-            var form_data = new FormData($('#form_add_user')[0]);
-            // console.log(form_data);
-            $.ajax({
-              url: '/add_users',
-              dataType: 'json',
-              contentType: false,
-              processData: false,
-              data: form_data,
-              type: 'POST',
-              async: true,
-              success: function (d, textStatus, jqXHR) {
-                if (d.status) {
-                    Swal.fire({
-                        icon: 'success',
-                        type: 'success',
-                        title: d.message,
-                        showConfirmButton: true
-                    }).then((result) => {
-                        location.reload()
-                    })
-                } else if (d.error) {
-                  Swal.fire({
-                        icon: 'warning',
-                        type: 'warning',
-                        title: d.message,
-                        showConfirmButton: true
-                    }).then((result) => {
-                        location.reload()
-                    })
-                } else {
-                    Swal.fire(
-                        'Mohon Maaf!',
-                        'Data gagal diperbarui',
-                        'error'
-                    )
-                }
-              },
-              // }).done(function (d, textStatus, jqXHR) {
+        e.preventDefault();
+        var form_data = new FormData($('#form_add_user')[0]);
+        // console.log(form_data);
+        $.ajax({
+          url: '/add_users',
+          dataType: 'json',
+          contentType: false,
+          processData: false,
+          data: form_data,
+          type: 'POST',
+          async: true,
+          success: function (d, textStatus, jqXHR) {
+            if (d.status) {
+              Swal.fire({
+                icon: 'success',
+                type: 'success',
+                title: d.message,
+                showConfirmButton: true
+              }).then((result) => {
+                location.reload()
+              })
+            } else if (d.error) {
+              Swal.fire({
+                icon: 'warning',
+                type: 'warning',
+                title: d.message,
+                showConfirmButton: true
+              }).then((result) => {
+                location.reload()
+              })
+            } else {
+              Swal.fire(
+                'Mohon Maaf!',
+                'Data gagal diperbarui',
+                'error'
+              )
+            }
+          },
+          // }).done(function (d, textStatus, jqXHR) {
 
-            }).fail(function (d, textStatus, jqXHR) {
-              alert('Failed upload video !!!');
-            });
+        }).fail(function (d, textStatus, jqXHR) {
+          alert('Failed upload video !!!');
         });
+      });
     });
-    $(function() {
-        $("#form_edit_user").on("submit", function(e) { //id of form 
-            e.preventDefault();
-            // var user_id = $("#form_edit_user #id").val();
-            // var user_namalengkap = $("#form_edit_user #nama").val();
-            // var user_name = $("#form_edit_user #username").val();
-            // var user_password = $("#form_edit_user #password").val();
-            // var user_role = $("#form_edit_user #role").val();
-            var form_data = new FormData($('#form_edit_user')[0]);
-            $.ajax({
-                url: '/edit_users',
-                dataType: 'json',
-                contentType: false,
-                processData: false,
-                data: form_data,
-                method: 'POST',
-                success: function(d) {
-                  if (d.status) {
-                    Swal.fire({
-                        icon: 'success',
-                        type: 'success',
-                        title: d.message,
-                        showConfirmButton: true
-                    }).then((result) => {
-                        location.reload()
-                    })
-                  } else if (d.error) {
-                    Swal.fire({
-                          icon: 'warning',
-                          type: 'warning',
-                          title: d.message,
-                          showConfirmButton: true
-                      }).then((result) => {
-                          location.reload()
-                      })
-                  } else {
-                      Swal.fire(
-                          'Mohon Maaf!',
-                          'Data gagal diperbarui',
-                          'error'
-                      )
-                  }
-                    // console.log(response);
-                },
-                error: function(jqXHR, textStatus, errorTrown) {
-                    // console.log(jqXHR, textStatus, errorTrown);
-                    Swal.fire(
-                        'Mohon Maaf!',
-                        'Data gagal diperbarui',
-                        'error'
-                    )
-                }
-            })
-        });
+    $(function () {
+      $("#form_edit_user").on("submit", function (e) { //id of form 
+        e.preventDefault();
+        // var user_id = $("#form_edit_user #id").val();
+        // var user_namalengkap = $("#form_edit_user #nama").val();
+        // var user_name = $("#form_edit_user #username").val();
+        // var user_password = $("#form_edit_user #password").val();
+        // var user_role = $("#form_edit_user #role").val();
+        var form_data = new FormData($('#form_edit_user')[0]);
+        $.ajax({
+          url: '/edit_users',
+          dataType: 'json',
+          contentType: false,
+          processData: false,
+          data: form_data,
+          method: 'POST',
+          success: function (d) {
+            if (d.status) {
+              Swal.fire({
+                icon: 'success',
+                type: 'success',
+                title: d.message,
+                showConfirmButton: true
+              }).then((result) => {
+                location.reload()
+              })
+            } else if (d.error) {
+              Swal.fire({
+                icon: 'warning',
+                type: 'warning',
+                title: d.message,
+                showConfirmButton: true
+              }).then((result) => {
+                location.reload()
+              })
+            } else {
+              Swal.fire(
+                'Mohon Maaf!',
+                'Data gagal diperbarui',
+                'error'
+              )
+            }
+            // console.log(response);
+          },
+          error: function (jqXHR, textStatus, errorTrown) {
+            // console.log(jqXHR, textStatus, errorTrown);
+            Swal.fire(
+              'Mohon Maaf!',
+              'Data gagal diperbarui',
+              'error'
+            )
+          }
+        })
+      });
     });
     $(document).ready(function () {
       $('.dropify').dropify({
@@ -756,127 +778,127 @@ Logo Detection
       // "pageLength": 50
     });
     $("#example3").css('width', '100%');
-    $("table").on("click", ".btn-delete", function(e) {
-        e.preventDefault();
-        let id = $(this).data("id");
-        let msg = $(this).data("delmsg");
-        let action = $(this).data("url");
-        Swal.fire({
-            title: "Apakah Yakin?",
-            text: `Apakah Anda yakin ingin menghapus data ${msg}?`,
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Hapus",
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: action,
-                    type: "POST",
-                    data: {
-                        id: id
-                    },
-                    dataType: "json",
-                    success: function(d) {
-                        if (d.status) {
-                          Swal.fire({
-                            icon: 'success',
-                            type: 'success',
-                            title: `Data ${msg} berhasil terhapus.`,
-                            showConfirmButton: true
-                          }).then((result) => {
-                            location.reload()
-                          })
-                        } else if (d.error) {
-                          Swal.fire({
-                            icon: 'warning',
-                            type: 'warning',
-                            title: `Data ${msg} gagal terhapus.`,
-                            showConfirmButton: true
-                          }).then((result) => {
-                            location.reload()
-                          })
-                        } else {
-                          Swal.fire(
-                            'Mohon Maaf!',
-                            'Data gagal diperbarui',
-                            'error'
-                          )
-                        }
-                    },
-                    error: function(jqXHR, textStatus, errorThrown) {
-                        Swal.fire({
-                            icon: "error",
-                            type: "error",
-                            title: "Error saat delete data",
-                            showConfirmButton: true,
-                        });
-                    },
-                });
-            }
-        });
+    $("table").on("click", ".btn-delete", function (e) {
+      e.preventDefault();
+      let id = $(this).data("id");
+      let msg = $(this).data("delmsg");
+      let action = $(this).data("url");
+      Swal.fire({
+        title: "Apakah Yakin?",
+        text: `Apakah Anda yakin ingin menghapus data ${msg}?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Hapus",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          $.ajax({
+            url: action,
+            type: "POST",
+            data: {
+              id: id
+            },
+            dataType: "json",
+            success: function (d) {
+              if (d.status) {
+                Swal.fire({
+                  icon: 'success',
+                  type: 'success',
+                  title: `Data ${msg} berhasil terhapus.`,
+                  showConfirmButton: true
+                }).then((result) => {
+                  location.reload()
+                })
+              } else if (d.error) {
+                Swal.fire({
+                  icon: 'warning',
+                  type: 'warning',
+                  title: `Data ${msg} gagal terhapus.`,
+                  showConfirmButton: true
+                }).then((result) => {
+                  location.reload()
+                })
+              } else {
+                Swal.fire(
+                  'Mohon Maaf!',
+                  'Data gagal diperbarui',
+                  'error'
+                )
+              }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+              Swal.fire({
+                icon: "error",
+                type: "error",
+                title: "Error saat delete data",
+                showConfirmButton: true,
+              });
+            },
+          });
+        }
+      });
     });
-    $("table").on("click", ".btn-delete-user", function(e) {
-        e.preventDefault();
-        let id = $(this).data("id");
-        let msg = $(this).data("delmsg");
-        let action = $(this).data("url");
-        Swal.fire({
-            title: "Apakah Yakin?",
-            text: `Apakah Anda yakin ingin menghapus data ${msg}?`,
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Hapus",
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: action,
-                    type: "POST",
-                    data: {
-                        id: id
-                    },
-                    dataType: "json",
-                    success: function(d) {
-                        if (d.status) {
-                          Swal.fire({
-                            icon: 'success',
-                            type: 'success',
-                            title: `Data ${msg} berhasil terhapus.`,
-                            showConfirmButton: true
-                          }).then((result) => {
-                            location.reload()
-                          })
-                        } else if (d.error) {
-                          Swal.fire({
-                            icon: 'warning',
-                            type: 'warning',
-                            title: `Data ${msg} gagal terhapus.`,
-                            showConfirmButton: true
-                          }).then((result) => {
-                            location.reload()
-                          })
-                        } else {
-                          Swal.fire(
-                            'Mohon Maaf!',
-                            'Data gagal diperbarui',
-                            'error'
-                          )
-                        }
-                    },
-                    error: function(jqXHR, textStatus, errorThrown) {
-                        Swal.fire({
-                            icon: "error",
-                            type: "error",
-                            title: "Error saat delete data",
-                            showConfirmButton: true,
-                        });
-                    },
-                });
-            }
-        });
+    $("table").on("click", ".btn-delete-user", function (e) {
+      e.preventDefault();
+      let id = $(this).data("id");
+      let msg = $(this).data("delmsg");
+      let action = $(this).data("url");
+      Swal.fire({
+        title: "Apakah Yakin?",
+        text: `Apakah Anda yakin ingin menghapus data ${msg}?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Hapus",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          $.ajax({
+            url: action,
+            type: "POST",
+            data: {
+              id: id
+            },
+            dataType: "json",
+            success: function (d) {
+              if (d.status) {
+                Swal.fire({
+                  icon: 'success',
+                  type: 'success',
+                  title: `Data ${msg} berhasil terhapus.`,
+                  showConfirmButton: true
+                }).then((result) => {
+                  location.reload()
+                })
+              } else if (d.error) {
+                Swal.fire({
+                  icon: 'warning',
+                  type: 'warning',
+                  title: `Data ${msg} gagal terhapus.`,
+                  showConfirmButton: true
+                }).then((result) => {
+                  location.reload()
+                })
+              } else {
+                Swal.fire(
+                  'Mohon Maaf!',
+                  'Data gagal diperbarui',
+                  'error'
+                )
+              }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+              Swal.fire({
+                icon: "error",
+                type: "error",
+                title: "Error saat delete data",
+                showConfirmButton: true,
+              });
+            },
+          });
+        }
+      });
     });
   </script>
   {% endblock %}
