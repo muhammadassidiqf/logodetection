@@ -348,14 +348,14 @@ Logo Detection
               <div class="col-md-12">
                 <div class="row">
                   <div class="form-group">
-                    <label>Model Name</label>
+                    <label>Model Name&nbsp;<span style="color: red;">(*)</span></label>
                     <input type="text" class="form-control" name="model_name" id="model_name" placeholder="Name Model"
                       aria-label="Name Model" required>
                   </div>
                 </div>
                 <div class="row">
                   <div class="form-group">
-                    <label>Model Weight</label>
+                    <label>Model Weight&nbsp;<span style="color: red;">(*)</span></label>
                     <div class="col-sm-12">
                       <div class="custom-file">
                         <input type="file" name="model_weights" id="model_weights" class="dropify"
@@ -366,7 +366,7 @@ Logo Detection
                 </div>
                 <div class="row">
                   <div class="form-group">
-                    <label>Model Config</label>
+                    <label>Model Config&nbsp;<span style="color: red;">(*)</span></label>
                     <div class="col-sm-12">
                       <div class="custom-file">
                         <input type="file" name="model_config" id="model_config" class="dropify"
@@ -377,7 +377,7 @@ Logo Detection
                 </div>
                 <div class="row">
                   <div class="form-group">
-                    <label>Model Label</label>
+                    <label>Model Label&nbsp;<span style="color: red;">(*)</span></label>
                     <div class="col-sm-12">
                       <div class="custom-file">
                         <input type="file" name="model_label" id="model_label" class="dropify"
@@ -391,7 +391,7 @@ Logo Detection
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Save changes</button>
+            <button type="submit" class="btn btn-primary" id="btn-upload">Save changes</button>
           </div>
         </form>
       </div>
@@ -401,7 +401,7 @@ Logo Detection
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Add Model</h5>
+          <h5 class="modal-title" id="exampleModalLabel">Add User</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <form action="" method="POST" id="form_add_user" enctype="multipart/form-data">
@@ -410,21 +410,21 @@ Logo Detection
               <div class="col-md-12">
                 <div class="row">
                   <div class="form-group">
-                    <label>Name</label>
+                    <label>Name&nbsp;<span style="color: red;">(*)</span></label>
                     <input type="text" class="form-control" name="user_namalengkap" id="nama" placeholder="Name"
                       aria-label="Name" required>
                   </div>
                 </div>
                 <div class="row">
                   <div class="form-group">
-                    <label>Username</label>
+                    <label>Username&nbsp;<span style="color: red;">(*)</span></label>
                     <input type="text" class="form-control" name="user_name" id="username" placeholder="Username"
                       aria-label="Username" required>
                   </div>
                 </div>
                 <div class="row">
                   <div class="form-group">
-                    <label for="exampleInputEmail">Password</label>
+                    <label for="exampleInputEmail">Password&nbsp;<span style="color: red;">(*)</span></label>
                     <div class="input-group">
                       <input type="password" class="form-control" name="user_password" id="user_password"
                         placeholder="Password" required>
@@ -437,7 +437,7 @@ Logo Detection
                 </div>
                 <div class="row">
                   <div class="form-group">
-                    <label>Role</label>
+                    <label>Role&nbsp;<span style="color: red;">(*)</span></label>
                     <div class="col-sm-12">
                       <select name="user_role" id="role" class="form-control" required>
                         <option value="" selected disabled>--Pilih Role--</option>
@@ -462,7 +462,7 @@ Logo Detection
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Edit Model</h5>
+          <h5 class="modal-title" id="exampleModalLabel">Edit User</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <form action="" method="POST" id="form_edit_user" enctype="multipart/form-data">
@@ -472,21 +472,21 @@ Logo Detection
               <div class="col-md-12">
                 <div class="row">
                   <div class="form-group">
-                    <label>Name</label>
+                    <label>Name&nbsp;<span style="color: red;">(*)</span></label>
                     <input type="text" class="form-control" name="user_namalengkap" id="nama" placeholder="Name"
                       aria-label="Name" required>
                   </div>
                 </div>
                 <div class="row">
                   <div class="form-group">
-                    <label>Username</label>
+                    <label>Username&nbsp;<span style="color: red;">(*)</span></label>
                     <input type="text" class="form-control" name="user_name" id="username" placeholder="Username"
                       aria-label="Username" required>
                   </div>
                 </div>
                 <div class="row">
                   <div class="form-group">
-                    <label for="exampleInputEmail">Password</label>
+                    <label for="exampleInputEmail">Password&nbsp;<span style="color: red;">(*)</span></label>
                     <div class="input-group">
                       <input type="password" class="form-control" name="user_password" id="password"
                         placeholder="Password" required>
@@ -499,7 +499,7 @@ Logo Detection
                 </div>
                 <div class="row">
                   <div class="form-group">
-                    <label>Role</label>
+                    <label>Role&nbsp;<span style="color: red;">(*)</span></label>
                     <div class="col-sm-12">
                       <select name="user_role" id="role" class="form-control" required>
                         <option value="" selected disabled>--Pilih Role--</option>
@@ -514,7 +514,7 @@ Logo Detection
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Save changes</button>
+            <button type="submit" class="btn btn-primary">Save changes</ type="submit">
           </div>
         </form>
       </div>
@@ -561,11 +561,26 @@ Logo Detection
       $("#form_edit_user #password").val(password);
       $("#form_edit_user #role").val(role).change();
     }
+
+    $(document).on('click', '.toggle-new', function () {
+      $(this).toggleClass("fa-eye fa-eye-slash");
+
+      var input = $("#user_password");
+      input.attr('type') === 'password' ? input.attr('type', 'text') : input.attr('type', 'password')
+    });
+    $(document).on('click', '.toggle-confirm', function () {
+      $(this).toggleClass("fa-eye fa-eye-slash");
+
+      var input = $("#password");
+      input.attr('type') === 'password' ? input.attr('type', 'text') : input.attr('type', 'password')
+    });
+
     $(function () {
       $("#form_add").on("submit", function (e) { //id of form 
         e.preventDefault();
         var form_data = new FormData($('#form_add')[0]);
         // console.log(form_data);
+        document.getElementById('btn-upload').style.pointerEvents = 'none';
         $.ajax({
           url: '/add_model',
           dataType: 'json',
@@ -604,23 +619,26 @@ Logo Detection
           // }).done(function (d, textStatus, jqXHR) {
 
         }).fail(function (d, textStatus, jqXHR) {
-          alert('Failed upload video !!!');
+          // alert('Failed upload video !!!');
+          if ($("#form_add #model_name").val() == null || $("#form_add #model_name").val() == undefined) {
+            alert('Failed upload, Model Name is null !!!');
+          } else if ($("#form_add #model_weights").val() == null || $("#form_add #model_weights").val() ==
+            undefined) {
+            alert('Failed upload, Model Weight is null !!!');
+          } else if ($("#form_add #model_config").val() == null || $("#form_add #model_config").val() ==
+            undefined) {
+            alert('Failed upload, Model config is null !!!');
+          } else if ($("#form_add #model_label").val() == null || $("#form_add #model_label").val() ==
+            undefined) {
+            alert('Failed upload, Model Label is null !!!');
+          } else {
+            alert('Failed upload!!!');
+          }
         });
+        document.getElementById('btn-upload').style.pointerEvents = 'auto';
       });
     });
 
-    $(document).on('click', '.toggle-new', function () {
-      $(this).toggleClass("fa-eye fa-eye-slash");
-
-      var input = $("#user_password");
-      input.attr('type') === 'password' ? input.attr('type', 'text') : input.attr('type', 'password')
-    });
-    $(document).on('click', '.toggle-confirm', function () {
-      $(this).toggleClass("fa-eye fa-eye-slash");
-
-      var input = $("#password");
-      input.attr('type') === 'password' ? input.attr('type', 'text') : input.attr('type', 'password')
-    });
     $(function () {
       $("#form_add_user").on("submit", function (e) { //id of form 
         e.preventDefault();

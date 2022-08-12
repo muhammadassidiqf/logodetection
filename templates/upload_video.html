@@ -31,6 +31,14 @@ Logo Detection
   .select2-selection__choice__remove {
     color: white !important;
   }
+
+  .select2 {
+    width: 100% !important;
+  }
+
+  .dropify-wrapper .dropify-message span.file-icon:before {
+    font-size: 5rem !important;
+  }
 </style>
 {% endblock %}
 {% block navbar %}
@@ -120,7 +128,8 @@ Logo Detection
               <div class="row">
                 <div class="col-6">
                   <div class="row">
-                    <label for="gambar" class="col-sm-12 col-form-label">Enter price of rate Ads/minutes</label>
+                    <label for="gambar" class="col-sm-12 col-form-label">Enter price of rate Ads/minutes&nbsp;<span
+                        style="color: red;">(*)</span></label>
                     <div class="col-sm-12">
                       <div class="input-group">
                         <div class="input-group-prepend">
@@ -132,11 +141,15 @@ Logo Detection
                         </div>
                       </div>
                     </div>
+                    <div class="col-sm-12">
+                      <label id="ads_value-error" class="error mt-2 text-danger" for="ads_value"></label>
+                    </div>
                   </div>
                 </div>
                 <div class="col-6">
                   <div class="row">
-                    <label for="gambar" class="col-sm-12 col-form-label">Model</label>
+                    <label for="gambar" class="col-sm-12 col-form-label">Sponsor&nbsp;<span
+                        style="color: red;">(*)</span></label>
                     <div class="col-sm-12">
                       <select name="model_id" id="model_id" class="form-control select2" multiple required
                         placeholder="Pilih Model" style="color: white;">
@@ -145,27 +158,39 @@ Logo Detection
                         {% endfor %}
                       </select>
                     </div>
+                    <div class="col-sm-12">
+                      <label id="model_id-error" class="error mt-2 text-danger" for="model_id"></label>
+                    </div>
                   </div>
                 </div>
               </div>
               <div class="row">
                 <div class="col-12">
                   <div class="row">
-                    <label for="gambar" class="col-sm-12 col-form-label">Select a video file</label>
+                    <label for="gambar" class="col-sm-12 col-form-label">Select a video file&nbsp;<span
+                        style="color: red;">(*)</span></label>
                     <div class="col-sm-12">
                       <div class="custom-file">
-                        <input type="file" name="file" id="file" class="dropify" data-allowed-file-extensions="mp4"
-                          accept="video/*" required>
+                        <input type="file" name="file_video" id="file_video" class="dropify"
+                          data-allowed-file-extensions="mp4" accept="video/*" required>
                       </div>
                     </div>
-                    <div class="d-flex justify-content-between">
-                      <h3 id="progress"></h3>
-                      <a id="btn-upload" class="btn btn-primary btn-md float-end mt-2">Detect</a>
+                    <div class="col-sm-12">
+                      <label id="file_video-error" class="error mt-2 text-danger" for="file_video"></label>
                     </div>
                     <!-- <div class="d-flex justify-content-between">
                         <h3 id="progress"></h3>
                         <a id="btn-test" class="btn btn-primary btn-md float-end mt-2">Test</a>
                       </div> -->
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12">
+                  <div class="row">
+                    <div class="col-sm-12 d-flex justify-content-end">
+                      <button id="btn-upload" class="btn btn-primary btn-md mt-2" type="submit">Detect</button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -244,6 +269,7 @@ Logo Detection
   <!-- plugins:js -->
   <script src="{{ url_for('static',filename='vendors/js/vendor.bundle.base.js')}}"></script>
   <script src="{{ url_for('static',filename='js/template.js')}}"></script>
+  <script src="{{ url_for('static',filename='vendors/jquery-validation/jquery.validate.min.js')}}"></script>
   <script src="{{ url_for('static',filename='js/blockui.js')}}"></script>
   <!-- endinject -->
 
@@ -267,145 +293,38 @@ Logo Detection
   {%block scripting %}
   <script>
     $(document).ready(function () {
-      $('.uang').on('change click keyup input paste', (function (event) {
-        $(this).val(function (index, value) {
-          return value.replace(/(?!\.)\D/g, "").replace(/(?<=\..*)\./g, "").replace(/(?<=\.\d\d).*/g, "")
-            .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        });
-      }));
       $('.dropify').dropify({
         messages: {
-          'default': '',
+          'default': 'Select files to upload <br>Or drag and drop video files',
           'replace': 'Drag and drop or click to replace',
           'remove': 'Remove',
           'error': 'Ooops, something wrong happended.'
         }
       });
-      $(".select2").select2();
-      $('#btn-upload').click(function (e) {
-        e.preventDefault();
-        document.getElementById('btn-upload').style.pointerEvents = 'none';
-        var form_data = new FormData($('#uploadform')[0]);
-        // console.log(form_data)
-        $.ajax({
-          url: '/detect',
-          dataType: 'json',
-          contentType: false,
-          processData: false,
-          data: form_data,
-          type: 'POST',
-          async: true,
-          success: function (d, textStatus, jqXHR) {
-            // console.log(d);
-            // $('#hasilnya').empty();
-            // // $('#bw_form').show();
-            let num = d.timing;
-            let n = num.toFixed(2);
-            // // $('body').append(d.htmlresponse);
-            // // if (d.bw_path != null || d.bw_path != '') {
-            // //   $('#bw_form').empty();
-            // // $('#res').attr('src', d.res);
-            // // console.log(d.datanya); 
-            Swal.fire({
-              icon: 'success',
-              title: 'Success! Video Uploaded',
-              timer: 3000,
-              timerProgressBar: true,
-              showConfirmButton: false,
-              text: 'Process time: ' + n + ' seconds'
-            })
-            $.ajax({
-              url: '/process',
-              dataType: 'json',
-              contentType: false,
-              processData: false,
-              data: form_data,
-              type: 'POST',
-              async: true,
-              xhr: function () {
-                var xhr = new window.XMLHttpRequest();
-                xhr.upload.addEventListener("progress", function (evt) {
-                  if (evt.lengthComputable) {
-                    var percentComplete = evt.loaded / evt.total;
-                    $('.spinner-border').css('display', 'inline-block');
-                    $('.navbar').block({
-                      message: null,
-                      css: {
-                        backgroundColor: 'transparent',
-                        border: '0'
-                      },
-                      overlayCSS: {
-                        backgroundColor: '#fff',
-                        opacity: 0.8
-                      }
-                    });
-                    $('div.container-scroller').block({
-                      message: '<div class="text-primary"><span class="spinner-border text-primary"></span> Proses dengan model ' +
-                        d.model.join(", ") + '...</div>',
-                      css: {
-                        backgroundColor: 'transparent',
-                        border: '0'
-                      },
-                      overlayCSS: {
-                        backgroundColor: '#fff',
-                        opacity: 0.8
-                      }
-                    });
-                  }
-                }, false);
-                return xhr;
-              },
-              success: function (d) {
-                console.log(d);
-                $('#hasilnya').empty();
-                let num = d.timing_proses;
-                let n = num.toFixed(2);
-                $('.navbar').unblock();
-                $('div.container-scroller').unblock()
-                Swal.fire(
-                  'Success! Video completed',
-                  'Process time: ' + n + ' seconds',
-                  'success'
-                )
-                $('#hasilnya').attr("src", 'display_video/' + d.filename_akhir);
-                $('#export').attr("href", 'export/' + d.video_id);
-                $('#example1').DataTable({
-                  destroy: true,
-                  data: d.datanya,
-                  columns: [{
-                      "data": 'num'
-                    },
-                    {
-                      "data": 'model_nama'
-                    },
-                    {
-                      "data": 'start_time'
-                    },
-                    {
-                      "data": 'end_time'
-                    },
-                    {
-                      "data": 'durasi_sec'
-                    },
-                    {
-                      "data": commify('ads_per_menit')
-                    },
-                  ],
-                });
-              }
-            });
-            document.getElementById('btn-upload').style.pointerEvents = 'auto';
-          },
-          // }).done(function (d, textStatus, jqXHR) {
+      $('.uang').on('change click keyup input paste', (function (event) {
+        $(this).val(function (index, value) {
+          var number_string = value.replace(/[^,\d]/g, '').toString(),
+            split = number_string.split(','),
+            sisa = split[0].length % 3,
+            rupiah = split[0].substr(0, sisa),
+            ribuan = split[0].substr(sisa).match(/\d{3}/gi);
 
-        }).fail(function (d, textStatus, jqXHR) {
-          // console.log(d);
-          $('.navbar').unblock();
-          $('div.container-scroller').unblock()
-          alert('Failed upload video !!!');
+          // tambahkan titik jika yang di input sudah menjadi angka ribuan
+          if (ribuan) {
+            separator = sisa ? '.' : '';
+            rupiah += separator + ribuan.join('.');
+          }
+
+          rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+          return rupiah
         });
+        // $(this).val(function (index, value) {
+        //   return value.replace(/(?!\.)\D/g, "").replace(/(?<=\..*)\./g, "").replace(/(?<=\.\d\d).*/g, "")
+        //     .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        // });
+      }));
+      $(".select2").select2();
 
-      });
 
       function commify(n) {
         var parts = n.toString().split(".");
@@ -429,6 +348,148 @@ Logo Detection
         })
         table.innerHTML += tr;
       }
+      $("#uploadform").validate({
+        rules: {
+          model_id: "required",
+          file_video: "required",
+          ads_value: "required"
+        },
+        messages: {
+          model_id: "Please select your sponsor",
+          file_video: "Please select your video",
+          ads_value: "Please enter your price"
+        },
+        errorPlacement: function (label, element) {
+          label.addClass('mt-2 text-danger');
+          label.insertAfter(element);
+        },
+        highlight: function (element, errorClass) {
+          $(element).parent().addClass('col-sm-12 has-danger')
+          $(element).addClass('form-control-danger')
+        },
+        submitHandler: function (form) {
+          document.getElementById('btn-upload').style.pointerEvents = 'none';
+          $.ajax({
+            url: '/detect',
+            dataType: 'json',
+            contentType: false,
+            processData: false,
+            data: new FormData($(form)[0]),
+            type: 'POST',
+            async: true,
+            success: function (d, textStatus, jqXHR) {
+              // console.log(d);
+              // $('#hasilnya').empty();
+              // // $('#bw_form').show();
+              let num = d.timing;
+              let n = num.toFixed(2);
+              // // $('body').append(d.htmlresponse);
+              // // if (d.bw_path != null || d.bw_path != '') {
+              // //   $('#bw_form').empty();
+              // // $('#res').attr('src', d.res);
+              // // console.log(d.datanya); 
+              Swal.fire({
+                icon: 'success',
+                title: 'Success! Video Uploaded',
+                timer: 3000,
+                timerProgressBar: true,
+                showConfirmButton: false,
+                text: 'Process time: ' + n + ' seconds'
+              })
+              $.ajax({
+                url: '/process',
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                data: new FormData($(form)[0]),
+                type: 'POST',
+                async: true,
+                xhr: function () {
+                  var xhr = new window.XMLHttpRequest();
+                  xhr.upload.addEventListener("progress", function (evt) {
+                    if (evt.lengthComputable) {
+                      var percentComplete = evt.loaded / evt.total;
+                      $('.spinner-border').css('display', 'inline-block');
+                      $('.navbar').block({
+                        message: null,
+                        css: {
+                          backgroundColor: 'transparent',
+                          border: '0'
+                        },
+                        overlayCSS: {
+                          backgroundColor: '#fff',
+                          opacity: 0.8
+                        }
+                      });
+                      $('div.container-scroller').block({
+                        message: '<div class="text-primary"><span class="spinner-border text-primary"></span> Proses dengan sponsor ' +
+                          d.model.join(", ") + '...</div>',
+                        css: {
+                          backgroundColor: 'transparent',
+                          border: '0'
+                        },
+                        overlayCSS: {
+                          backgroundColor: '#fff',
+                          opacity: 0.8
+                        }
+                      });
+                    }
+                  }, false);
+                  return xhr;
+                },
+                success: function (d) {
+                  // console.log(d);
+                  $('#hasilnya').empty();
+                  let num = d.timing_proses;
+                  let n = num.toFixed(2);
+                  $('.navbar').unblock();
+                  $('div.container-scroller').unblock()
+                  Swal.fire(
+                    'Success! Video completed',
+                    'Process time: ' + n + ' seconds',
+                    'success'
+                  )
+                  $('#hasilnya').attr("src", 'display_video/' + d.filename_akhir);
+                  $('#export').attr("href", 'export/' + d.video_id);
+                  $('#example1').DataTable({
+                    destroy: true,
+                    data: d.datanya,
+                    columns: [{
+                        "data": 'num'
+                      },
+                      {
+                        "data": 'model_nama'
+                      },
+                      {
+                        "data": 'start_time'
+                      },
+                      {
+                        "data": 'end_time'
+                      },
+                      {
+                        "data": 'durasi_sec'
+                      },
+                      {
+                        "data": commify('ads_per_menit')
+                      },
+                    ],
+                  });
+                }
+              });
+              document.getElementById('btn-upload').style.pointerEvents = 'auto';
+            },
+            // }).done(function (d, textStatus, jqXHR) {
+
+          }).fail(function (d, textStatus, jqXHR) {
+            // console.log(d);
+            $('.navbar').unblock();
+            $('div.container-scroller').unblock()
+            alert('Failed upload video !!!');
+          });
+          return false; // extra insurance preventing the default form action
+        }
+      });
+
     });
   </script>
   {% endblock %}

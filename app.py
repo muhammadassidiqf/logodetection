@@ -20,6 +20,7 @@ import numpy as np
 import io
 import xlwt
 import json
+import shutil
 from ast import literal_eval
 # from Video import Video
 from logo_db.YoloDetector import YoloDetector
@@ -122,7 +123,7 @@ def login():
 
         account = LogoDB.login_check(
             self=LogoDB, username=username, password=password)
-        print(account)
+        # print(account)
         if account:
             session['loggedin'] = True
             session['user_id'] = account['user_id']
@@ -247,8 +248,8 @@ def jsonResponseFactory(data):
 def detection():
     start = time.time()
     if request.method == 'POST':
-        if 'file' in request.files:
-            f = request.files['file']
+        if 'file_video' in request.files:
+            f = request.files['file_video']
             if f.filename == '':
                 flash('No selected file')
                 return redirect(request.url)
@@ -265,7 +266,7 @@ def detection():
                 #     return jsonify({'filename':str(filename)})
                 model_id = request.form.getlist('model_id')
                 ads_value = request.form.get('ads_value', type=str)
-                ads = ads_value.replace(",", "")
+                ads = ads_value.replace(".", "")
                 
                 str_model = [] 
                 model_array = [] 
@@ -305,10 +306,10 @@ def detection():
 
 @app.route('/process', methods=['POST', 'GET'])
 def process():
-    f = request.files['file']
+    f = request.files['file_video']
     filename = secure_filename(f.filename)
     ads_value = request.form.get('ads_value', type=str)
-    ads = ads_value.replace(",", "")
+    ads = ads_value.replace(".", "")
     # filename = request.form.get('filename', type=str) 
     model_id = request.form.getlist('model_id')
     # ads = request.form.get('ads', type=str)
@@ -373,11 +374,13 @@ def update_user():
         return redirect(url_for('index'))
 
 @app.route('/add_model', methods=['POST'])
-def add_model():
+def create_model():
     if request.method == 'POST':
         f = request.files['model_weights']
         f2 = request.files['model_config']
         f3 = request.files['model_label']
+        # print('masuk')
+        # print([f,f2,f3])
         basepath = os.path.dirname(__file__)
         model_name = request.form.get('model_name', type=str)
         file_path = os.path.join(
@@ -410,12 +413,13 @@ def delete_model():
         id_model = request.form.get('id', type=str)
         data = LogoDB.get_one_model(self=LogoDB, model_id=id_model)
         if (data):
-            isExist = os.path.exists(file_path)
             basepath = os.path.dirname(__file__)
             file_path = os.path.join(
                 basepath, 'static/models/', data['model_nama'])
+            isExist = os.path.exists(file_path)
             if isExist:
-                os.remove(file_path)
+                # os.remove(file_path)
+                shutil.rmtree(file_path) 
                 # print(data)
                 LogoDB.delete_model(self=LogoDB, id_model=id_model)
                 return jsonify({'status': True, 'message': 'Data berhasil dihapus!'})
@@ -537,4 +541,4 @@ def detail_video(video_id):
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=80)
+    app.run(debug=True, host="127.0.0.1")
