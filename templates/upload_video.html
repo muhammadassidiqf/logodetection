@@ -188,7 +188,16 @@ Logo Detection
               <div class="row">
                 <div class="col-12">
                   <div class="row">
-                    <div class="col-sm-12 d-flex justify-content-end">
+                    <div class="col-8">
+                      <div class="progress progress-lg mt-2">
+                        <div class="progress-bar bg-success" id="progressBar" role="progressbar"><span id="load_status"></span></div>
+                      </div>
+                    </div>
+                    <!-- <progress class="col-8" id="progressBar" role="progressbar" style="margin-left: 20px;" value="0" max="100" ></progress> -->
+                    <div class="col-2 d-flex justify-content-start">
+                      <h5 id="status"></h5>
+                    </div>
+                    <div class="col-2 d-flex justify-content-end" style="margin-left: -20px;">
                       <button id="btn-upload" class="btn btn-primary btn-md mt-2" type="submit">Detect</button>
                     </div>
                   </div>
@@ -377,6 +386,21 @@ Logo Detection
             data: new FormData($(form)[0]),
             type: 'POST',
             async: true,
+            xhr: function () {
+              var xhr = new window.XMLHttpRequest();
+              xhr.upload.addEventListener("progress", function (event) {
+                var percent = (event.loaded / event.total) * 100;
+                document.getElementById("progressBar").style.width = Math.round(percent) + "%";
+                document.getElementById("status").innerHTML = Math.round(percent) + "% uploaded... please wait";
+                document.getElementById("load_status").innerHTML = Math.round(percent) + "%";
+              }, false);
+              xhr.addEventListener("load", function (event) {
+                document.getElementById("status").innerHTML = 'Uploaded Success';
+                document.getElementById("progressBar").style.width = "100%";
+                document.getElementById("load_status").innerHTML = Math.round(percent) + "%";
+              }, false);
+              return xhr;
+            },
             success: function (d, textStatus, jqXHR) {
               // console.log(d);
               // $('#hasilnya').empty();
