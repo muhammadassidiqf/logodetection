@@ -30,6 +30,17 @@ class LogoDB():
             return 'berhasil'
         except Exception as e:
             return e
+    def add_proses(self, rando):
+        try: 
+            self.open_db(self)
+            sql = "INSERT INTO proses(unique_id) VALUES (%s)"
+            val = (rando)
+            cursor.execute(sql, val)
+            conn.commit()
+            self.close_db(self)
+            return 'berhasil'
+        except Exception as e:
+            return e
     def login_check(self, username, password):
         try: 
             self.open_db(self)
@@ -136,7 +147,7 @@ class LogoDB():
     def get_one_video(self, video_id):
         try: 
             self.open_db(self)
-            sql = "SELECT * FROM video WHERE video_filename_akhir = %s"
+            sql = "SELECT * FROM video WHERE video_filename_akhir like %s"
             val = (video_id)
             cursor.execute(sql, val)
             results = cursor.fetchone()
@@ -159,7 +170,7 @@ class LogoDB():
     def add_video(self, arr_video):
         try: 
             self.open_db(self)
-            sql = "INSERT INTO video(video_filename_awal, video_filename_akhir, model_id, ads_rate,user_id) VALUES (%s, %s, %s, %s,%s)"
+            sql = "INSERT INTO video(video_filename_awal, video_filename_akhir, model_id, ads_rate,user_id,status) VALUES (%s, %s, %s, %s,%s,%s)"
             val = arr_video
             cursor.execute(sql, val)
             conn.commit()
@@ -279,6 +290,17 @@ class LogoDB():
         try: 
             self.open_db(self)
             sql = "UPDATE video SET video_estimasi = %s WHERE video_filename_akhir = %s"
+            val = data
+            cursor.execute(sql, val)
+            conn.commit()
+            self.close_db(self)
+            return 'berhasil'
+        except Exception as e:
+            return e
+    def update_status_video(self, data):
+        try: 
+            self.open_db(self)
+            sql = "UPDATE video SET status = %s WHERE video_filename_akhir = %s"
             val = data
             cursor.execute(sql, val)
             conn.commit()

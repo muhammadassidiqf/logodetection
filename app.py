@@ -22,6 +22,7 @@ import xlwt
 import json
 import shutil
 from ast import literal_eval
+import string
 # from Video import Video
 from logo_db.YoloDetector import YoloDetector
 
@@ -268,16 +269,27 @@ def detection():
                 ads_value = request.form.get('ads_value', type=str)
                 ads = ads_value.replace(".", "")
                 
+                S = 10  # number of characters in the string.  
+                # call random.choices() string module to find the string in Uppercase + numeric data.  
+                filename_awal = str(filename)
+
                 str_model = [] 
                 model_array = [] 
+                video_array= [] 
                 for i in model_id:
                     model_array += [i]
                     model = LogoDB.get_one_model(self=LogoDB,model_id=i)
                     str_model += [model['model_nama']]
+                    filename_akhir = str(filename.rsplit('.', 1)[0]) + '_' + str(time.time()) + '.mp4'
+                    LogoDB.add_video(self=LogoDB, arr_video=[
+                            filename_awal, filename_akhir, i, ads, session['user_id'],'On Progress'])
+                    video_array += [filename_akhir]
+                ran = ''.join(random.choices(string.ascii_uppercase + string.digits, k = S))
+                LogoDB.add_proses(self=LogoDB, rando=str(ran))
                 # print(model_array)
                 # return response(stream_with_context(process(filename,model_id,ads)))
                 # return redirect(302,jsonResponseFactory({'timing': timing, 'model': str_model}),url_for("process", filename=filename, model_id=model_id, ads=ads))
-                return jsonify({'timing': timing, 'model': str_model,'filename':filename, 'model_id':model_array, 'ads':ads })
+                return jsonify({'timing': timing, 'model': str_model,'filename':filename, 'model_id':model_array, 'ads':ads, 'unique':str(ran), 'video':video_array })
                 # return jsonify({'timing': timing, 'model': str_model},redirect(url_for("process", filename=filename, model_id=model_id, ads=ads)))
                 # filename_awal = str(filename)
                 # for i in model_id:
@@ -338,6 +350,28 @@ def process():
         # return ({'filename': str(filename_akhir), 'datanya': datanya, 'video_id': video['video_id']})
         timing = time.time() - start
         return jsonify({'filename_akhir': str(filename_akhir), 'timing_proses': timing, 'datanya': datanya, 'video_id': video['video_id']})
+        # return render_template('upload_video.html', filename=str(filename_akhir), datanya=datanya, video_id=video['video_id'])
+    else:
+        print('gagal')
+
+@app.route('/test', methods=['POST', 'GET'])
+def test():
+    if request.method == 'POST':
+        start = time.time()
+        ads_value = request.form.get('ads')
+        video_id = request.form.get('video')
+        print(video_id)
+        video = LogoDB.get_one_video(self=LogoDB, video_id=video_id)
+        model = video['model_id']
+        yolo = YoloDetector()
+        yolomain = yolo.main(
+            id_model=model, video_id=video_id, thresh=0.5, ads=ads_value)
+        if(yolomain):
+            datanya = LogoDB.get_output(self=LogoDB, video_id=video_id)
+            timing = time.time() - start
+            LogoDB.update_status_video(self=LogoDB,data=['Done', video_id])
+            video = LogoDB.get_one_video(self=LogoDB, video_id=video_id)
+            return jsonify({'filename_akhir': str(video_id), 'timing_proses': timing, 'datanya': datanya, 'model_id': model, 'status':video['status']})
         # return render_template('upload_video.html', filename=str(filename_akhir), datanya=datanya, video_id=video['video_id'])
     else:
         print('gagal')
