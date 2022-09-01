@@ -276,16 +276,18 @@ def detection():
                 str_model = [] 
                 model_array = [] 
                 video_array= [] 
+                ran = ''.join(random.choices(string.ascii_uppercase + string.digits, k = S))
+                LogoDB.add_proses(self=LogoDB, rando=str(ran))
                 for i in model_id:
                     model_array += [i]
                     model = LogoDB.get_one_model(self=LogoDB,model_id=i)
                     str_model += [model['model_nama']]
                     filename_akhir = str(filename.rsplit('.', 1)[0]) + '_' + str(time.time()) + '.mp4'
                     LogoDB.add_video(self=LogoDB, arr_video=[
-                            filename_awal, filename_akhir, i, ads, session['user_id'],'On Progress'])
+                            str(ran), filename_awal, filename_akhir, i, ads, session['user_id'],'On Progress'])
                     video_array += [filename_akhir]
-                ran = ''.join(random.choices(string.ascii_uppercase + string.digits, k = S))
-                LogoDB.add_proses(self=LogoDB, rando=str(ran))
+                LogoDB.update_proses(self=LogoDB, arr_proses=[
+                            ','.join(str_model), filename_awal, ads, session['user_id'], str(ran)])
                 # print(model_array)
                 # return response(stream_with_context(process(filename,model_id,ads)))
                 # return redirect(302,jsonResponseFactory({'timing': timing, 'model': str_model}),url_for("process", filename=filename, model_id=model_id, ads=ads))
@@ -568,8 +570,20 @@ def export(video_id):
 def detail_video(video_id):
     if 'loggedin' in session:
         video = LogoDB.get_video_by_videoid(self=LogoDB, video_id=video_id)
-        outputs = LogoDB.get_output_by_videoid(self=LogoDB, video_id=video_id)
-        return render_template('detail_video.html', video=video, outputs=outputs, sessionnya=session)
+        # result = []
+        data = []
+        for i in video:
+            result = []
+            result.append(i['num'])
+            result.append(i['model_nama'])
+            result.append(str(i['video_filename_akhir']))
+            result.append(str(i['video_id']))
+            outputs = LogoDB.get_output_by_videoid(self=LogoDB, video_id=i['video_id']) 
+            result.append(outputs)
+            data.append(result)
+        print(data)
+        # outputs = LogoDB.get_output_by_videoid(self=LogoDB, video_id=video_id) 
+        return render_template('detail_video.html', data=data, sessionnya=session)
     else:
         return redirect(url_for('login'))
 

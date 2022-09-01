@@ -112,7 +112,7 @@ class LogoDB():
         data_show = []
         try: 
             self.open_db(self)
-            sql = "SELECT ROW_NUMBER() OVER() AS num, model.model_nama, video.*, video.created_at as uploaded_at, (Select sum(outputs.ads_per_menit) as total_ads from outputs where outputs.video_id = video.video_id) as total_ads FROM video JOIN model ON model.model_id = video.model_id JOIN users ON users.user_id = video.user_id"
+            sql = "SELECT ROW_NUMBER() OVER() AS num, proses.*, video.created_at as uploaded_at, video.video_id, sum(outputs.ads_per_menit) as total_ads FROM proses JOIN video ON proses.unique_id = video.proses_id JOIN outputs ON outputs.video_id = video.video_id GROUP BY unique_id"
             cursor.execute(sql)
             results = cursor.fetchall()
             for data in results:
@@ -170,7 +170,7 @@ class LogoDB():
     def add_video(self, arr_video):
         try: 
             self.open_db(self)
-            sql = "INSERT INTO video(video_filename_awal, video_filename_akhir, model_id, ads_rate,user_id,status) VALUES (%s, %s, %s, %s,%s,%s)"
+            sql = "INSERT INTO video(proses_id,video_filename_awal, video_filename_akhir, model_id, ads_rate,user_id,status) VALUES (%s, %s, %s, %s, %s,%s,%s)"
             val = arr_video
             cursor.execute(sql, val)
             conn.commit()
@@ -205,6 +205,17 @@ class LogoDB():
             self.open_db(self)
             sql = "update users set user_name= %s, user_password=%s, user_namalengkap=%s, user_role=%s where user_id=%s"
             val = arr_user
+            cursor.execute(sql, val)
+            conn.commit()
+            self.close_db(self)
+            return 'berhasil'
+        except Exception as e:
+            return e
+    def update_proses(self, arr_proses):
+        try: 
+            self.open_db(self)
+            sql = "update proses set sponsor= %s, video=%s, ads=%s, user=%s where unique_id=%s"
+            val = arr_proses
             cursor.execute(sql, val)
             conn.commit()
             self.close_db(self)
@@ -251,6 +262,7 @@ class LogoDB():
         data_show = []
         try: 
             self.open_db(self)
+            # sql = "SELECT ROW_NUMBER() OVER() AS num, outputs.*, model.model_nama FROM proses JOIN video ON video.proses_id=proses.unique_id JOIN outputs on outputs.video_id=video.video_id JOIN model ON model.model_id = video.model_id WHERE video.proses_id = %s"
             sql = "SELECT ROW_NUMBER() OVER() AS num, outputs.*, model.model_nama FROM outputs JOIN video ON video.video_id=outputs.video_id JOIN model ON model.model_id = video.model_id WHERE video.video_id = %s"
             val = (video_id)
             cursor.execute(sql, val)
@@ -265,7 +277,7 @@ class LogoDB():
         data_show = []
         try: 
             self.open_db(self)
-            sql = "SELECT ROW_NUMBER() OVER() AS num, model.model_nama, video.*, video.created_at as uploaded_at, (Select sum(outputs.ads_per_menit) as total_ads from outputs where outputs.video_id = video.video_id) as total_ads FROM video JOIN model ON model.model_id = video.model_id JOIN users ON users.user_id = video.user_id WHERE video.user_id = %s"
+            sql = "SELECT ROW_NUMBER() OVER() AS num, proses.*, video.created_at as uploaded_at, video.video_id, sum(outputs.ads_per_menit) as total_ads FROM proses JOIN video ON proses.unique_id = video.proses_id JOIN outputs ON outputs.video_id = video.video_id WHERE video.user_id = %s GROUP BY unique_id"
             val = (user_id)
             cursor.execute(sql, val)
             results = cursor.fetchall()
@@ -278,10 +290,10 @@ class LogoDB():
     def get_video_by_videoid(self, video_id):
         try: 
             self.open_db(self)
-            sql = "SELECT * FROM video WHERE video_id = %s"
+            sql = "SELECT ROW_NUMBER() OVER() AS num,video.*, model.model_nama FROM video JOIN model ON model.model_id = video.model_id WHERE proses_id = %s"
             val = (video_id)
             cursor.execute(sql, val)
-            results = cursor.fetchone()
+            results = cursor.fetchall()
             self.close_db(self)
             return results
         except Exception as e:

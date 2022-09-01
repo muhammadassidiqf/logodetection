@@ -188,16 +188,16 @@ Logo Detection
                   {% for row in datavideo %}
                   <tr>
                     <td class="py-1"><label for="">{{ row['num'] }}</label></td>
-                    <td>{{ row['video_filename_awal'] }}</td>
-                    <td>{{ row['model_nama'] }}</td>
-                    <td>Rp. {{ '{:,.2f}'.format(row['ads_rate']) }}</td>
+                    <td>{{ row['video'] }}</td>
+                    <td>{{ row['sponsor'] }}</td>
+                    <td>Rp. {{ '{:,.2f}'.format(row['ads']) }}</td>
                     <td>{% if(row['total_ads']) %} Rp. {{ '{:,.2f}'.format(row['total_ads']) }} {% else %} 0 {% endif %}
                     </td>
                     <td>{{ row['uploaded_at'].strftime('%d %b %Y - %H:%M:%S') }}</td>
                     <td>
-                      <a href="{{ url_for('detail_video', video_id=row['video_id']) }}"
+                      <a href="{{ url_for('detail_video', video_id=row['unique_id']) }}"
                         class="btn btn-info btn-rounded btn-md btn-icon"><i class="icon-play"></i> Play</a>
-                      <a href="{{ url_for('export', video_id=row['video_id']) }}"
+                      <a href="{{ url_for('export', video_id=row['unique_id']) }}"
                         class="btn btn-success btn-rounded btn-md btn-icon"><i class="icon-download"></i> Export</a>
                     </td>
                   </tr>

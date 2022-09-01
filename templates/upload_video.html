@@ -456,15 +456,16 @@ Logo Detection
                     var xhr = new window.XMLHttpRequest();
                     xhr.addEventListener("load", function (d) {
                       // console.log(d.target.response);
-                      completeHandler(d.target.response)
-                      // $("#sponsor_"+d.model_id+"").empty();
-                      // $("#sponsor_"+d.model_id+"").append(d.status);
+                      // completeHandler(d.target.response)
+                      $("#sponsor_"+d.model_id+"").empty();
+                      $("#sponsor_"+d.model_id+"").append(d.status);
                       // $("#lds-ellipsis_"+d.model_id+"").css("display", "none");
                     }, false);
                     return xhr;
                   },
                   success: function (d) {
-                    // console.log(d);
+                    $("#sponsor_"+d.model_id+"").empty();
+                    $("#sponsor_"+d.model_id+"").append(d.status);
                   }
                 });
                   
