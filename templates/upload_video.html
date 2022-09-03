@@ -412,74 +412,79 @@ Logo Detection
               return xhr;
             },
             success: function (d, textStatus, jqXHR) {
-              // console.log(d);
-              // $('#hasilnya').empty();
-              // // $('#bw_form').show();
               let num = d.timing;
               let n = num.toFixed(2);
-              // // $('body').append(d.htmlresponse);
-              // // if (d.bw_path != null || d.bw_path != '') {
-              // //   $('#bw_form').empty();
-              // // $('#res').attr('src', d.res);
-              // console.log(d); 
-              // Swal.fire({
-              //   icon: 'success',
-              //   title: 'Success! Video Uploaded',
-              //   timer: 3000,
-              //   timerProgressBar: true,
-              //   showConfirmButton: false,
-              //   text: 'Process time: ' + n + ' seconds'
-              // })
-              
+              $("#waiting").empty()
               for (let i = 0; i < d.model.length; i++) {
-                $("#waiting").append('<span class="me-4">Sponsor '+d.model[i]+' Logo</span><div class="lds-ellipsis" id="lds-ellipsis"><div></div><div></div><div></div><div></div></div><span class="ms-4" id="sponsor_'+d.model_id[i]+'">On Progress</span><br>');
+                $("#waiting").append('<span class="me-4">Sponsor '+d.model[i]+' Logo</span><div class="lds-ellipsis" id="lds-ellipsis_'+d.model_id[i]+'"><div></div><div></div><div></div><div></div></div><span class="ms-4" id="sponsor_'+d.model_id[i]+'">On Progress</span><br>');
               }
 
-              var delayInMilliseconds = 1000; //1 second
-              function empty(element) {
-                element.innerHTML = ""; 
-              }
-              setTimeout(function() {
-                for (let i = 0; i < d.model_id.length; i++) {
-                  console.log(i);
+              for (let i = 0; i < d.model_id.length; i++) {
+                // console.log(i);
+                // var data = new FormData();
+                // data.append('model_id', d.model_id[i]);
+                // data.append('ads', d.ads);
+                // data.append('filename', d.filename);
+                // data.append('video', d.video[i]);
+                // aj(data)
+                setTimeout(function() {
+                  // aj(data)
                   $.ajax({
-                  url: '/test',
-                  data: {
-                    model_id: d.model_id[i],
-                    ads: d.ads,
-                    filename: d.filename,
-                    video: d.video[i]
-                  },
-                  type: 'POST',
-                  async:false,
-                  xhr: function () {
-                    var xhr = new window.XMLHttpRequest();
-                    xhr.addEventListener("load", function (d) {
-                      // console.log(d.target.response);
-                      // completeHandler(d.target.response)
+                    url: '/test',
+                    data: {
+                      model_id: d.model_id[i],
+                      ads: d.ads,
+                      filename: d.filename,
+                      video: d.video[i]
+                    },
+                    type: 'POST',
+                    async:false,
+                    // xhr: function () {
+                    //   var xhr = new window.XMLHttpRequest();
+                    //   xhr.upload.addEventListener("progress", function (evt) {
+                    //     if (evt.lengthComputable) {
+                    //       var percentComplete = evt.loaded / evt.total;
+                    //       $('.spinner-border').css('display', 'inline-block');
+                    //       $('.navbar').block({
+                    //         message: null,
+                    //         css: {
+                    //           backgroundColor: 'transparent',
+                    //           border: '0'
+                    //         },
+                    //         overlayCSS: {
+                    //           backgroundColor: '#fff',
+                    //           opacity: 0.8
+                    //         }
+                    //       });
+                    //       $('div.container-scroller').block({
+                    //         message: '<div class="text-primary"><span class="spinner-border text-primary"></span> Proses dengan sponsor ' +
+                    //           d.model.join(", ") + '...</div>',
+                    //         css: {
+                    //           backgroundColor: 'transparent',
+                    //           border: '0'
+                    //         },
+                    //         overlayCSS: {
+                    //           backgroundColor: '#fff',
+                    //           opacity: 0.8
+                    //         }
+                    //       });
+                    //     }
+                    //   }, false);
+                    //   xhr.addEventListener("load", function (d) {
+                    //     $("#sponsor_"+d.model_id+"").empty();
+                    //     $("#sponsor_"+d.model_id+"").append(d.status);
+                    //   }, false);
+                    //   return xhr;
+                    // },
+                    success: function (d) {
                       $("#sponsor_"+d.model_id+"").empty();
+                      $("#ellipsis_"+d.model_id+"").css("display", "none");
                       $("#sponsor_"+d.model_id+"").append(d.status);
-                      // $("#lds-ellipsis_"+d.model_id+"").css("display", "none");
-                    }, false);
-                    return xhr;
-                  },
-                  success: function (d) {
-                    $("#sponsor_"+d.model_id+"").empty();
-                    $("#sponsor_"+d.model_id+"").append(d.status);
-                  }
-                });
-                  
-                }
-              }, delayInMilliseconds);
-              // for (let i = 0; i < d.model_id.length; i++) {
-              //   console.log(i);
-              //   var data = new FormData();
-              //   data.append('model_id', d.model_id[i]);
-              //   data.append('ads', d.ads);
-              //   data.append('filename', d.filename);
-              //   data.append('video', d.video[i]);
-              //   aj(data)
-              // }
+                    }
+                    
+                  });
+                }, 200);
+              }
               document.getElementById('btn-upload').style.pointerEvents = 'auto';
             },
 
@@ -497,26 +502,5 @@ Logo Detection
 
     });
     
-    function completeHandler(d) {
-      const obj = JSON.parse(d);
-      // console.log(obj.status);
-      let parent = document.getElementById("sponsor_"+obj.model_id+"");
-      empty(parent);
-      // $("#sponsor_"+obj.model_id+"").empty();
-      // $("#sponsor_"+obj.model_id+"").append(obj.status);
-    }
-    function aj(data) {
-      
-      var ajax = new XMLHttpRequest();
-      ajax.addEventListener("load", function (d) {
-          // console.log(d);
-          completeHandler(d.target.response)
-          // $("#sponsor_"+d.model_id+"").empty();
-          // $("#sponsor_"+d.model_id+"").append(d.status);
-          // $("#lds-ellipsis_"+d.model_id+"").css("display", "none");
-        }, false);
-      ajax.open("POST", "/test",false);
-      ajax.send(data);
-    }
   </script>
   {% endblock %}
