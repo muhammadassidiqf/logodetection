@@ -25878,7 +25878,7 @@ dl li {
   border: none;
   border-right: 1px solid #dee2e6;
   font-family: "Manrope", sans-serif;
-  background: transparent;
+  background-color: #f2f0f0;
 }
 
 @media (max-width: 991px) {

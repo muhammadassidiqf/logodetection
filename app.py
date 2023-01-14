@@ -1,4 +1,5 @@
 from distutils.log import Log
+from enum import unique
 from posixpath import split
 from urllib import response
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash, Response, send_from_directory, stream_with_context, render_template_string
@@ -57,47 +58,6 @@ def run(obj, *args, **kwargs):
         attribute = getattr(obj, name)
         if ismethod(attribute):
             attribute(*args, **kwargs)
-
-# def prepare_image(file):
-#     img = image.load_img(file, target_size=(224, 224))
-#     img_array = image.img_to_array(img)
-#     img_norm = image.img_to_array(img).astype(np.float32)/255
-#     img_array_expanded_dims = np.expand_dims(img_norm, axis=0)
-#     return img_array_expanded_dims
-
-# def prediction(filepath):
-#     model = load_model('static/models/bca1.hdf5')
-#     model.compile(loss='categorical_crossentropy',
-#                 optimizer='adam',
-#                 metrics=['accuracy'])
-
-#     #matriks citra asli
-#     inp = image.load_img(filepath)
-#     img_array = image.img_to_array(inp)
-
-#     start = time.time()
-
-#     #matriks pre-processing
-#     img = prepare_image(filepath)
-
-#     #proses prediksi
-#     classes = model.predict(img)
-
-#     timing = time.time() - start
-
-#     print("processing time: ", timing)
-
-
-#     res = []   
-#     if classes[0][0] == 1:
-#         result = classes[0][0] * 100
-#         res.append((result,img_array,img))
-#         # print("Daun Padi Sehat")
-#     elif classes[0][1] > classes[0][0]:
-#         result = classes[0][1] * 100
-#         res.append((result,img_array,img))
-#         # print("Penyakit Blas Daun Padi")
-#     return res
 
 @app.route("/index", methods=["POST", "GET"])
 def index():
@@ -361,6 +321,7 @@ def test():
     if request.method == 'POST':
         start = time.time()
         ads_value = request.form.get('ads')
+        num = request.form.get('num')
         video_id = request.form.get('video')
         print(video_id)
         video = LogoDB.get_one_video(self=LogoDB, video_id=video_id)
@@ -373,7 +334,7 @@ def test():
             timing = time.time() - start
             LogoDB.update_status_video(self=LogoDB,data=['Done', video_id])
             video = LogoDB.get_one_video(self=LogoDB, video_id=video_id)
-            return jsonify({'filename_akhir': str(video_id), 'timing_proses': timing, 'datanya': datanya, 'model_id': model, 'status':video['status']})
+            return jsonify({'filename_akhir': str(video_id), 'timing_proses': timing, 'datanya': datanya, 'model_id': model, 'status':video['status'], 'num':num, 'model':request.form.get('model_name')})
         # return render_template('upload_video.html', filename=str(filename_akhir), datanya=datanya, video_id=video['video_id'])
     else:
         print('gagal')
@@ -474,6 +435,21 @@ def delete_user():
         data = LogoDB.get_one_user(self=LogoDB, user_id=id_user)
         if (data):
             LogoDB.delete_user(self=LogoDB, id_user=id_user)
+            return jsonify({'status': True, 'message': 'Data berhasil dihapus!'})
+        else:
+            return jsonify({'error': True, 'message': 'Data gagal terhapus!'})
+    else:
+        flash('No selected file')
+        return redirect(url_for('index'))
+
+@app.route('/hapus_proses', methods=['POST'])
+def delete_proses():
+    if request.method == 'POST':
+        id_proses = request.form.get('id', type=str)
+        data = LogoDB.get_one_proses(self=LogoDB, unique_id=id_proses)
+        if (data):
+            LogoDB.delete_proses(self=LogoDB, unique_id=id_proses)
+            LogoDB.delete_video(self=LogoDB, proses_id=id_proses)
             return jsonify({'status': True, 'message': 'Data berhasil dihapus!'})
         else:
             return jsonify({'error': True, 'message': 'Data gagal terhapus!'})

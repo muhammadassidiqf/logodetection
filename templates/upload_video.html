@@ -220,6 +220,22 @@ Logo Detection
     </div>
     <div class="row">
       <div class="col-12 grid-margin stretch-card">
+          <div class="card">
+              <div class="card-body">
+                <div class="home-tab">
+                  <div class="d-sm-flex align-items-center justify-content-between border-bottom">
+                    <ul class="nav nav-tabs" role="tablist" id="tabs-nav">
+                    </ul>
+                  </div>
+                  <div class="tab-content tab-content-basic" id="tabs-content">
+                  
+                  </div>
+                </div>
+            </div>
+        </div>
+      </div>
+    <!-- <div class="row">
+      <div class="col-12 grid-margin stretch-card">
         <div class="card">
           <div class="card-body">
             <h4 class="card-title">Results</h4>
@@ -230,11 +246,6 @@ Logo Detection
                     <label for="gambar" class="col-12 col-form-label float-start">Video Process</label>
                     <div class="col-12 text-center">
                       <img src="" class="img-fluid" id="hasilnya" width="500" alt="">
-                      <!-- {% if filename %}
-                        {% else %}
-                        <img src="https://via.placeholder.com/500x250?text=Hasil+detect+video" class="img-fluid" id="res"
-                          alt="">
-                        {% endif %} -->
                     </div>
                   </div>
                 </div>
@@ -280,7 +291,7 @@ Logo Detection
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
   <!-- content-wrapper ends -->
   {% endblock %}
@@ -344,6 +355,51 @@ Logo Detection
       }));
       $(".select2").select2();
 
+      function set_array(data) {
+        var in_data = []
+        if(data.num == 0){
+          var show = "show active"
+          var active = "active"
+        }else{
+          var show = ""
+        }
+        in_data.push('<li class="nav-item"><a class="nav-link ps-0 '+active+'" id="'+data.model+'-tab" data-bs-toggle="tab" href="#'+data.model+'" role="tab" aria-controls="overview" aria-selected="true"><span class="ms-2 me-2">'+data.model+'</span></a></li>')
+        in_data.push('<div class="tab-pane fade '+show+'" id="'+data.model+'" role="tabpanel" aria-labelledby="'+data.model+'-tab"><div class="row"><div class="col-12 grid-margin stretch-card"><div class="card"><div class="card-body"><h4 class="card-title">Results</h4><div class="row"><div class="col-12"><div class="row"><div class="col-12"><label for="gambar" class="col-12 col-form-label float-start">Video Process</label><div class="col-12 text-center"><img src="" class="img-fluid" id="hasilnya'+data.model_id+'" width="500" alt=""></div></div></div></div></div></div></div></div><div class="col-12"><div class="card"><div class="card-body"><div class="row mb-2"><div class="col-6"><h1 class="card-title">Generate Results</h1><p>Results of process detection </p></div></div><hr><div><table class="table table-striped" id="example'+data.model_id+'" style="width: 100%;"><thead><tr> <th>No</th><th>Logo</th><th>Start (M : S)</th><th>End (M : S)</th><th>Duration (Sec)</th><th>Ads Value (Rp.)</th></tr></thead><tbody></tbody></table></div></div></div></div></div>')
+        in_data.push(data)
+        
+        return in_data
+      }
+
+      function set_html(all_data) {
+        for (let j = 0; j < all_data.length; j++) {
+          $("#tabs-nav").append(all_data[j][0])
+          $("#tabs-content").append(all_data[j][1])
+          $('#hasilnya'+all_data[j][2].model_id+'').attr("src", 'display_video/' + all_data[j][2].filename_akhir);
+          $('#example'+all_data[j][2].model_id+'').DataTable({
+            destroy: true,
+            data: all_data[j][2].datanya,
+            columns: [{
+                "data": 'num'
+              },
+              {
+                "data": 'model_nama'
+              },
+              {
+                "data": 'start_time'
+              },
+              {
+                "data": 'end_time'
+              },
+              {
+                "data": 'durasi_sec'
+              },
+              {
+                "data": commify('ads_per_menit')
+              },
+            ],
+          });
+        }
+      }
 
       function commify(n) {
         var parts = n.toString().split(".");
@@ -402,10 +458,13 @@ Logo Detection
                 var percent = (event.loaded / event.total) * 100;
                 document.getElementById("progressBar").style.width = Math.round(percent) + "%";
                 document.getElementById("status").innerHTML = Math.round(percent) + "% uploaded... please wait";
+                document.getElementById("status").classList.add('mt-2');
                 document.getElementById("load_status").innerHTML = Math.round(percent) + "%";
               }, false);
               xhr.addEventListener("load", function (event) {
+                document.getElementById("status").classList.remove('mt-2');
                 document.getElementById("status").innerHTML = 'Uploaded Success';
+                document.getElementById("status").classList.add('mt-2');
                 document.getElementById("progressBar").style.width = "100%";
                 document.getElementById("load_status").innerHTML ="100%";
               }, false);
@@ -418,7 +477,13 @@ Logo Detection
               for (let i = 0; i < d.model.length; i++) {
                 $("#waiting").append('<span class="me-4">Sponsor '+d.model[i]+' Logo</span><div class="lds-ellipsis" id="lds-ellipsis_'+d.model_id[i]+'"><div></div><div></div><div></div><div></div></div><span class="ms-4" id="sponsor_'+d.model_id[i]+'">On Progress</span><br>');
               }
-
+              // var content = '';
+              // for (let i = 0; i < d.model.length; i++) {
+              //   content += '<span class="me-4">Sponsor '+d.model[i]+' Logo</span><div class="lds-ellipsis" id="lds-ellipsis_'+d.model_id[i]+'"><div></div><div></div><div></div><div></div></div><span class="ms-4" id="sponsor_'+d.model_id[i]+'">On Progress</span><br>';
+              // }
+              var all_data = []
+              var isi = ''
+              var isi2 = ''
               for (let i = 0; i < d.model_id.length; i++) {
                 // console.log(i);
                 // var data = new FormData();
@@ -427,64 +492,60 @@ Logo Detection
                 // data.append('filename', d.filename);
                 // data.append('video', d.video[i]);
                 // aj(data)
+                // console.log(content);
+                // $('.spinner-border').css('display', 'inline-block');
+                // $('.navbar').block({
+                //   message: null,
+                //   css: {
+                //     backgroundColor: 'transparent',
+                //     border: '0'
+                //   },
+                //   overlayCSS: {
+                //     backgroundColor: '#fff',
+                //     opacity: 0.8
+                //   }
+                // });
+                // $('div.container-scroller').block({
+                //   message: '<div class="text-primary" id="waiting">'+content+'</div>',
+                //   css: {
+                //     backgroundColor: 'transparent',
+                //     border: '0'
+                //   },
+                //   overlayCSS: {
+                //     backgroundColor: '#fff',
+                //     opacity: 0.8
+                //   }
+                // });
                 setTimeout(function() {
-                  // aj(data)
                   $.ajax({
                     url: '/test',
                     data: {
                       model_id: d.model_id[i],
                       ads: d.ads,
                       filename: d.filename,
-                      video: d.video[i]
+                      video: d.video[i],
+                      num: i,
+                      model_name : d.model[i]
                     },
                     type: 'POST',
                     async:false,
-                    // xhr: function () {
-                    //   var xhr = new window.XMLHttpRequest();
-                    //   xhr.upload.addEventListener("progress", function (evt) {
-                    //     if (evt.lengthComputable) {
-                    //       var percentComplete = evt.loaded / evt.total;
-                    //       $('.spinner-border').css('display', 'inline-block');
-                    //       $('.navbar').block({
-                    //         message: null,
-                    //         css: {
-                    //           backgroundColor: 'transparent',
-                    //           border: '0'
-                    //         },
-                    //         overlayCSS: {
-                    //           backgroundColor: '#fff',
-                    //           opacity: 0.8
-                    //         }
-                    //       });
-                    //       $('div.container-scroller').block({
-                    //         message: '<div class="text-primary"><span class="spinner-border text-primary"></span> Proses dengan sponsor ' +
-                    //           d.model.join(", ") + '...</div>',
-                    //         css: {
-                    //           backgroundColor: 'transparent',
-                    //           border: '0'
-                    //         },
-                    //         overlayCSS: {
-                    //           backgroundColor: '#fff',
-                    //           opacity: 0.8
-                    //         }
-                    //       });
-                    //     }
-                    //   }, false);
-                    //   xhr.addEventListener("load", function (d) {
-                    //     $("#sponsor_"+d.model_id+"").empty();
-                    //     $("#sponsor_"+d.model_id+"").append(d.status);
-                    //   }, false);
-                    //   return xhr;
-                    // },
-                    success: function (d) {
-                      $("#sponsor_"+d.model_id+"").empty();
-                      $("#ellipsis_"+d.model_id+"").css("display", "none");
-                      $("#sponsor_"+d.model_id+"").append(d.status);
+                    success: function (data) {
+                      $("#sponsor_"+data.model_id+"").empty();
+                      $("#lds-ellipsis_"+data.model_id+"").css("display", "none");
+                      $("#sponsor_"+data.model_id+"").append(data.status);
+                      
+                      all_data.push(set_array(data))
                     }
                     
                   });
+                  if(d.model.length == all_data.length){
+                    set_html(all_data)
+                    
+                  }
                 }, 200);
               }
+              // $('.navbar').unblock();
+              // $('div.container-scroller').unblock()
               document.getElementById('btn-upload').style.pointerEvents = 'auto';
             },
 

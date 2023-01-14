@@ -1,5 +1,5 @@
 import cv2
-vidcap = cv2.VideoCapture('[HIGHLIGHT] Bali United FC vs Dewa United FC _ Goal Skill Save.mp4')
+vidcap = cv2.VideoCapture('videplayback.mp4')
 success,image = vidcap.read()
 print(success)
 count = 0

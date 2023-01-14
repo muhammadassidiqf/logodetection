@@ -108,7 +108,7 @@ Logo Detection
                           <ul class="nav nav-tabs" role="tablist">
                             {% for i in data %}
                             <li class="nav-item">
-                              <a class="nav-link ps-0" id="{{ i[1] }}-tab" data-bs-toggle="tab" href="#{{ i[1] }}" role="tab" aria-controls="overview" aria-selected="true"><span class="ms-2 me-2">{{ i[1] }}</span></a>
+                              <a class="nav-link ps-0 {% if(i[0]==1) %} active {% endif %}" id="{{ i[1] }}-tab" data-bs-toggle="tab" href="#{{ i[1] }}" role="tab" aria-controls="overview" aria-selected="true"><span class="ms-2 me-2">{{ i[1] }}</span></a>
                             </li>
                             {% endfor %}
                           </ul>

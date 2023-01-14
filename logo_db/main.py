@@ -144,6 +144,17 @@ class LogoDB():
             return results
         except Exception as e:
             return e
+    def get_one_proses(self, unique_id):
+        try: 
+            self.open_db(self)
+            sql = "SELECT * FROM proses WHERE unique_id = %s"
+            val = (unique_id)
+            cursor.execute(sql, val)
+            results = cursor.fetchone()
+            self.close_db(self)
+            return results
+        except Exception as e:
+            return e
     def get_one_video(self, video_id):
         try: 
             self.open_db(self)
@@ -227,6 +238,28 @@ class LogoDB():
             self.open_db(self)
             sql = "Delete from model where model_id = %s"
             val = id_model
+            cursor.execute(sql, val)
+            conn.commit()
+            self.close_db(self)
+            return 'berhasil'
+        except Exception as e:
+            return e
+    def delete_proses(self, unique_id):
+        try: 
+            self.open_db(self)
+            sql = "Delete from proses where unique_id = %s"
+            val = unique_id
+            cursor.execute(sql, val)
+            conn.commit()
+            self.close_db(self)
+            return 'berhasil'
+        except Exception as e:
+            return e
+    def delete_video(self, proses_id):
+        try: 
+            self.open_db(self)
+            sql = "Delete from video where proses_id = %s"
+            val = proses_id
             cursor.execute(sql, val)
             conn.commit()
             self.close_db(self)

@@ -199,6 +199,9 @@ Logo Detection
                         class="btn btn-info btn-rounded btn-md btn-icon"><i class="icon-play"></i> Play</a>
                       <a href="{{ url_for('export', video_id=row['unique_id']) }}"
                         class="btn btn-success btn-rounded btn-md btn-icon"><i class="icon-download"></i> Export</a>
+                      <a href="javascript:;" class="btn btn-danger btn-rounded btn-md btn-icon btn-delete-proses"
+                        data-id="{{ row['unique_id'] }}" data-url="/hapus_proses"
+                        data-delmsg="Video {{ row['video'] }}"><i class="icon-trash"></i> Hapus</a>
                     </td>
                   </tr>
                   {% endfor %}
@@ -527,6 +530,7 @@ Logo Detection
   <script src="{{ url_for('static',filename='vendors/js/vendor.bundle.base.js')}}"></script>
   <script src="{{ url_for('static',filename='js/template.js')}}"></script>
   <script src="{{ url_for('static',filename='js/blockui.js')}}"></script>
+  <script src="{{ url_for('static',filename='js/off-canvas.js')}}"></script>
   <!-- endinject -->
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/js/dropify.min.js"></script>
@@ -858,6 +862,67 @@ Logo Detection
       });
     });
     $("table").on("click", ".btn-delete-user", function (e) {
+      e.preventDefault();
+      let id = $(this).data("id");
+      let msg = $(this).data("delmsg");
+      let action = $(this).data("url");
+      Swal.fire({
+        title: "Apakah Yakin?",
+        text: `Apakah Anda yakin ingin menghapus data ${msg}?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Hapus",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          $.ajax({
+            url: action,
+            type: "POST",
+            data: {
+              id: id
+            },
+            dataType: "json",
+            success: function (d) {
+              if (d.status) {
+                Swal.fire({
+                  icon: 'success',
+                  type: 'success',
+                  title: `Data ${msg} berhasil terhapus.`,
+                  showConfirmButton: true
+                }).then((result) => {
+                  location.reload()
+                })
+              } else if (d.error) {
+                Swal.fire({
+                  icon: 'warning',
+                  type: 'warning',
+                  title: `Data ${msg} gagal terhapus.`,
+                  showConfirmButton: true
+                }).then((result) => {
+                  location.reload()
+                })
+              } else {
+                Swal.fire(
+                  'Mohon Maaf!',
+                  'Data gagal diperbarui',
+                  'error'
+                )
+              }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+              Swal.fire({
+                icon: "error",
+                type: "error",
+                title: "Error saat delete data",
+                showConfirmButton: true,
+              });
+            },
+          });
+        }
+      });
+    });
+    $("table").on("click", ".btn-delete-proses", function (e) {
       e.preventDefault();
       let id = $(this).data("id");
       let msg = $(this).data("delmsg");
